@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item android:title="SubItems">
+        <menu>
+            <item
+                android:id="@+id/subitem_04"
+                android:icon="@mipmap/ic_launcher"
+                android:title="SubItem04" />
+            <item
+                android:id="@+id/subitem_05"
+                android:icon="@mipmap/ic_launcher"
+                android:title="SubItem05" />
+            <item
+                android:id="@+id/subitem_06"
+                android:icon="@mipmap/ic_launcher"
+                android:title="SubItem06" />
+        </menu>
+    </item>
+</menu>

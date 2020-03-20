@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Mooncell</string>
+    <string name="action_favorite">收藏</string>
+    <string name="action_settings">设置</string>
+    <string name="action_search">搜索</string>
+    <string name="title_activity_example">exampleActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">fgo.wiki</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+
+    <string name="home_second">Home Second</string>
+    <string name="action_share">分享</string>
+    <string name="action_notice">通知</string>
+    <string name="action_login">登录</string>
+    <string name="action_about">关于Mooncell</string>
+</resources>
