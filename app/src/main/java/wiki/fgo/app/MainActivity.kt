@@ -1,5 +1,6 @@
 package wiki.fgo.app
 
+import android.app.DownloadManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -8,12 +9,12 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.os.Message
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -55,27 +56,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             true
         }
 
-        R.id.action_share -> {
-            val clipboard =
-                getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("text", webView.url)
-            clipboard.setPrimaryClip(clip)
-
-            Snackbar.make(webView, "已复制到剪切板", Snackbar.LENGTH_SHORT).show()
-            true
-        }
+//        R.id.action_share -> {
+//            val clipboard =
+//                getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+//            val clip = ClipData.newPlainText("text", webView.url)
+//            clipboard.setPrimaryClip(clip)
+//
+//            Snackbar.make(webView, "已复制到剪切板", Snackbar.LENGTH_SHORT).show()
+//            true
+//        }
 
         R.id.action_favorite -> {
             if (!isChecked) {
                 my_toolbar.menu.findItem(R.id.action_favorite).icon =
                     ContextCompat.getDrawable(this, R.drawable.ic_action_favorite)
                 isChecked = true
-                Toast.makeText(applicationContext, "收藏成功", Toast.LENGTH_SHORT).show()
+                Snackbar.make(webView, "收藏成功", Snackbar.LENGTH_SHORT).show()
             } else {
                 my_toolbar.menu.findItem(R.id.action_favorite).icon =
                     ContextCompat.getDrawable(this, R.drawable.ic_action_favorite_empty)
                 isChecked = false
-                Toast.makeText(applicationContext, "取消收藏", Toast.LENGTH_SHORT).show()
+                Snackbar.make(webView, "取消收藏", Snackbar.LENGTH_SHORT).show()
             }
             true
         }
@@ -130,32 +131,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
-        nav_view.setNavigationItemSelectedListener(this)
-        val toggle = ActionBarDrawerToggle(
-            this,
-            drawer_layout,
-            my_toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        m_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-//                Toast.makeText(applicationContext, query.toString(), Toast.LENGTH_SHORT).show()
-                val searchUrl = searchBaseUrl + query.toString()
-                webView.loadUrl(searchUrl)
-                // Clear the text in search bar but (don't trigger a new search!)
-                m_search_view.setQuery("", false)
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return true
-            }
-        })
-
+        setDrawer()
+        swipeLayout.setColorSchemeResources(R.color.colorPrimary);
+        setQueryListener()
         supportActionBar?.setDisplayShowTitleEnabled(false)
         loadWebView()
     }
@@ -196,6 +174,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             webView.loadUrl(cssLayer)
             webView.reload()
         }
+
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onCreateWindow(
+                view: WebView,
+                dialog: Boolean,
+                userGesture: Boolean,
+                resultMsg: Message?
+            ): Boolean {
+                val result: WebView.HitTestResult = view.hitTestResult
+                val data: String? = result.extra
+                val context = view.context
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data))
+                context.startActivity(browserIntent)
+                return false
+            }
+        }
     }
 
     private fun setWebView() {
@@ -219,7 +213,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //设置UA
         settings.userAgentString =
             settings.userAgentString + " mooncellApp/" + BuildConfig.VERSION_NAME
-
         // More web view settings
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             settings.safeBrowsingEnabled = true
@@ -233,7 +226,39 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         settings.loadWithOverviewMode = true
         settings.setGeolocationEnabled(true)
         settings.allowFileAccess = true
+        settings.javaScriptCanOpenWindowsAutomatically = true
+        settings.setSupportMultipleWindows(true)
         //webview setting
         webView.fitsSystemWindows = true
+    }
+
+    private fun setQueryListener() {
+        m_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+//                Toast.makeText(applicationContext, query.toString(), Toast.LENGTH_SHORT).show()
+                val searchUrl = searchBaseUrl + query.toString()
+                webView.loadUrl(searchUrl)
+                // Clear the text in search bar but (don't trigger a new search!)
+                m_search_view.setQuery("", false)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return true
+            }
+        })
+    }
+
+    private fun setDrawer() {
+        nav_view.setNavigationItemSelectedListener(this)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawer_layout,
+            my_toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+        drawer_layout.addDrawerListener(toggle)
+        toggle.syncState()
     }
 }
