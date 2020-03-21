@@ -42,9 +42,9 @@ android {
 }
 
 dependencies {
+    implementation 'com.github.salomonbrys.kotson:kotson:2.5.0'
     implementation 'com.google.firebase:firebase-perf:19.0.5'
     implementation 'com.google.firebase:firebase-analytics:17.2.3'
-    // Add the Firebase SDK for Crashlytics.
     implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta02'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

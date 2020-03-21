@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Message
+import android.util.Log
 import android.view.*
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
@@ -20,9 +21,20 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
+import com.github.salomonbrys.kotson.fromJson
+import com.github.salomonbrys.kotson.get
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.JsonElement
 import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Response
+import wiki.fgo.app.httpRequest.HTTPUtil
+import java.io.IOException
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -33,6 +45,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
 
     private var searchBaseUrl: String = "https://fgo.wiki/index.php?search="
+
+    private var responseText: String? = null
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -158,15 +172,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
-        val menu: Menu = nav_view.menu
-        val subMenu: SubMenu = menu.addSubMenu(1, 1, 0, "当前活动")
-        for (i in 1..2) {
-            subMenu.add("SubMenu Item $i")
-        }
+        sendRequestWithOkHttp()
 
         setDrawer()
-
-        swipeLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeLayout.setColorSchemeResources(R.color.colorPrimary)
         setQueryListener()
         supportActionBar?.setDisplayShowTitleEnabled(false)
         loadWebView()
@@ -300,6 +309,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return "https://fgo.wiki/w/$title"
     }
 
+    @SuppressLint("RtlHardcoded")
     private fun closeDrawerAfterClick(item: MenuItem, custom: String? = null) {
         if (custom != null) {
             drawer_layout.closeDrawer(Gravity.LEFT)
@@ -310,7 +320,63 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun activityClickListener(item: MenuItem){
-        Toast.makeText(applicationContext, "you selected me!", Toast.LENGTH_SHORT).show()
+    private fun activityClickListener(item: MenuItem) {
+        drawer_layout.closeDrawer(Gravity.LEFT)
+        webView.loadUrl(urlConcat(item.title.toString()))
+    }
+
+    private fun showResponse(stringList: List<String>) {
+        runOnUiThread {
+            val menu: Menu = nav_view.menu
+            val subMenu: SubMenu = menu.addSubMenu(1, 1, 0, "当前活动")
+            for (i in stringList) {
+                val subStringList = i.split(",")
+                subMenu.add(subStringList.elementAt(0))
+            }
+        }
+    }
+
+    fun parseJsonWithJsonObject(jsonData: String) {
+        try {
+            val json: JsonElement = Gson().fromJson(jsonData)
+            val sourceText = json["parse"]["text"]["*"].toString()
+            var result: String? = null
+            val pattern = "<p>(.*)</p>"
+            val matcher: Matcher = Pattern.compile(pattern).matcher(sourceText)
+
+            Log.e("test",json["parse"]["text"]["*"].toString())
+            if (matcher.find()) {
+                result = matcher.group(1).toString()
+            }
+            val resultArray = result?.replace("<br />\\n","")?.split("<br />")
+            if (resultArray != null) {
+                return showResponse(resultArray)
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
+
+    private fun sendRequestWithOkHttp() {
+        Thread(Runnable {
+            try {
+                HTTPUtil.sendOkHttpRequest(
+                    "https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1",
+                    object : Callback {
+
+                        override fun onResponse(call: Call?, response: Response?) {
+                            val responseData = response?.body()?.string()
+
+                            parseJsonWithJsonObject(responseData!!)
+                        }
+
+                        override fun onFailure(call: Call?, e: IOException?) {
+                            e?.printStackTrace()
+                        }
+                    })
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+        }).start()
     }
 }
