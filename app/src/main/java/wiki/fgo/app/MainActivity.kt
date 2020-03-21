@@ -1,7 +1,9 @@
 package wiki.fgo.app
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -16,6 +18,7 @@ import android.webkit.WebViewClient
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -45,9 +48,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var searchBaseUrl: String = "https://fgo.wiki/index.php?search="
 
-    private var responseText: String? = null
-
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+    private val MY_PERMISSIONS_MIPUSH_GROUP = 1
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
@@ -169,12 +172,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        checkPermissions()
         setSupportActionBar(findViewById(R.id.my_toolbar))
-
-        sendRequestWithOkHttp()
 
         setDrawer()
         swipeLayout.setColorSchemeResources(R.color.colorPrimary)
+        sendRequestWithOkHttp("https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1")
         setQueryListener()
         supportActionBar?.setDisplayShowTitleEnabled(false)
         loadWebView()
@@ -343,11 +346,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val pattern = "<p>(.*)</p>"
             val matcher: Matcher = Pattern.compile(pattern).matcher(sourceText)
 
-            Log.e("test",json["parse"]["text"]["*"].toString())
+            Log.e("test", json["parse"]["text"]["*"].toString())
             if (matcher.find()) {
                 result = matcher.group(1)?.toString()
             }
-            val resultArray = result?.replace("<br />\\n","")?.split("<br />")
+            val resultArray = result?.replace("<br />\\n", "")?.split("<br />")
             if (resultArray != null) {
                 return showResponse(resultArray)
             }
@@ -356,11 +359,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun sendRequestWithOkHttp() {
+    private fun sendRequestWithOkHttp(url: String) {
         Thread(Runnable {
             try {
                 HTTPUtil.sendOkHttpRequest(
-                    "https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1",
+                    url,
                     object : Callback {
 
                         override fun onResponse(call: Call?, response: Response?) {
@@ -377,5 +380,52 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 ex.printStackTrace()
             }
         }).start()
+    }
+
+    private fun checkPermissions() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(
+                this@MainActivity,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                this@MainActivity,
+                Manifest.permission.READ_PHONE_STATE
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this@MainActivity,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+            ) {
+                ActivityCompat.requestPermissions(
+                    this@MainActivity,
+                    arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_PHONE_STATE
+                    ),
+                    MY_PERMISSIONS_MIPUSH_GROUP
+                )
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(
+                    this@MainActivity,
+                    arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_PHONE_STATE
+                    ),
+                    MY_PERMISSIONS_MIPUSH_GROUP
+                )
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            // Permission has already been granted
+        }
     }
 }
