@@ -346,7 +346,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             Log.e("test",json["parse"]["text"]["*"].toString())
             if (matcher.find()) {
-                result = matcher.group(1).toString()
+                result = matcher.group(1)?.toString()
             }
             val resultArray = result?.replace("<br />\\n","")?.split("<br />")
             if (resultArray != null) {
