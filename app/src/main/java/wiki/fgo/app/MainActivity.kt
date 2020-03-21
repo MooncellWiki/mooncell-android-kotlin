@@ -1,15 +1,13 @@
 package wiki.fgo.app
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Message
-import android.view.KeyEvent
-import android.view.Menu
-import android.view.MenuItem
-import android.view.SubMenu
+import android.view.*
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -19,7 +17,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -103,9 +100,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    @SuppressLint("RtlHardcoded")
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         // Check if the key event was the Back button and if there's history
-        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack() && !drawer_layout.isDrawerOpen(
+                Gravity.LEFT
+            )
+        ) {
             webView.goBack()
             return true
         }
@@ -114,25 +115,41 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return super.onKeyDown(keyCode, event)
     }
 
+    @SuppressLint("RtlHardcoded")
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.END)
+        if (drawer_layout.isDrawerOpen(Gravity.LEFT)) {
+            drawer_layout.closeDrawer(Gravity.LEFT)
         } else {
             super.onBackPressed()
         }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if (item.title == "SubMenu Item 1") {
-            Toast.makeText(applicationContext, "you selected me!", Toast.LENGTH_SHORT).show()
-        }
-
         when (item.itemId) {
-            R.id.svt_overview -> Toast.makeText(applicationContext, "123", Toast.LENGTH_SHORT).show()
-            R.id.ce_overview -> Toast.makeText(applicationContext, "456", Toast.LENGTH_SHORT).show()
-            else -> Toast.makeText(applicationContext, "gone", Toast.LENGTH_SHORT).show()
+            R.id.svt_overview -> closeDrawerAfterClick(item)
+            R.id.ce_overview -> closeDrawerAfterClick(item, "礼装图鉴")
+            R.id.cc_overview -> closeDrawerAfterClick(item)
+            R.id.weekly_mission -> closeDrawerAfterClick(item, "御主任务/周常")
+            R.id.new_cards -> closeDrawerAfterClick(item, "模板:新增卡牌")
+            R.id.simulate_gacha -> closeDrawerAfterClick(item, "抽卡模拟器")
+            R.id.quest -> closeDrawerAfterClick(item)
+            R.id.enemy_overview -> closeDrawerAfterClick(item)
+            R.id.items_overview -> closeDrawerAfterClick(item)
+            R.id.skill_overview -> closeDrawerAfterClick(item)
+            R.id.mst_equip -> closeDrawerAfterClick(item)
+            R.id.clothes_overview -> closeDrawerAfterClick(item)
+            R.id.music_overview -> closeDrawerAfterClick(item)
+            R.id.cv_overview -> closeDrawerAfterClick(item)
+            R.id.illust_overview -> closeDrawerAfterClick(item)
+            R.id.jp_client_dl -> closeDrawerAfterClick(item, "Mooncell:Jpclient")
+            R.id.sponsor -> closeDrawerAfterClick(
+                item,
+                "Mooncell:如何帮助我们完善网站#除了贡献内容外，您还可以资助我们改善服务器资源"
+            )
+            R.id.faq -> closeDrawerAfterClick(item, "Mooncell:求助与建议")
+            R.id.comment -> closeDrawerAfterClick(item, "Mooncell:评论须知")
+            else -> activityClickListener(item)
         }
-
         return true
     }
 
@@ -142,7 +159,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
         val menu: Menu = nav_view.menu
-        val subMenu: SubMenu = menu.addSubMenu(1,1,0,"当前活动")
+        val subMenu: SubMenu = menu.addSubMenu(1, 1, 0, "当前活动")
         for (i in 1..2) {
             subMenu.add("SubMenu Item $i")
         }
@@ -277,5 +294,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
+    }
+
+    private fun urlConcat(title: String): String {
+        return "https://fgo.wiki/w/$title"
+    }
+
+    private fun closeDrawerAfterClick(item: MenuItem, custom: String? = null) {
+        if (custom != null) {
+            drawer_layout.closeDrawer(Gravity.LEFT)
+            webView.loadUrl(urlConcat(custom))
+        } else {
+            drawer_layout.closeDrawer(Gravity.LEFT)
+            webView.loadUrl(urlConcat(item.title.toString()))
+        }
+    }
+
+    private fun activityClickListener(item: MenuItem){
+        Toast.makeText(applicationContext, "you selected me!", Toast.LENGTH_SHORT).show()
     }
 }
