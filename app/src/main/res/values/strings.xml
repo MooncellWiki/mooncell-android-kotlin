@@ -10,13 +10,28 @@
     <string name="nav_header_subtitle">fgo.wiki</string>
     <string name="nav_header_desc">Navigation header</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-
-    <string name="home_second">Home Second</string>
     <string name="action_share">分享</string>
     <string name="action_notice">通知</string>
     <string name="action_login">登录</string>
     <string name="action_about">关于Mooncell</string>
+    <string name="sidebar_group2_title">常用</string>
+    <string name="svt_overview">英灵图鉴</string>
+    <string name="ce_overview">概念礼装图鉴</string>
+    <string name="cc_overview">指令纹章图鉴</string>
+    <string name="weekly_mission">周常任务</string>
+    <string name="new_cards">新增卡牌</string>
+    <string name="simulate_gacha">模拟抽卡</string>
+    <string name="quest">关卡配置</string>
+    <string name="enemy_overview">敌人一览</string>
+    <string name="items_overview">道具一览</string>
+    <string name="skill_overview">技能一览</string>
+    <string name="mst_equip">御主装备</string>
+    <string name="clothes_overview">灵衣一览</string>
+    <string name="music_overview">音乐鉴赏</string>
+    <string name="cv_overview">声优一览</string>
+    <string name="illust_overview">画师一览</string>
+    <string name="jp_client_dl">日服客户端下载</string>
+    <string name="sponsor">支持我们</string>
+    <string name="faq">求助与建议</string>
+    <string name="comment">评论须知</string>
 </resources>

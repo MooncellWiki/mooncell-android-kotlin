@@ -1,20 +1,19 @@
 package wiki.fgo.app
 
-import android.app.DownloadManager
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.Message
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
-import android.webkit.*
+import android.view.SubMenu
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -48,6 +47,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         R.id.action_login -> {
             webView.loadUrl("https://fgo.wiki/w/特殊:用户登录")
+            true
+        }
+
+        R.id.action_notice -> {
+            webView.loadUrl("https://fgo.wiki/w/特殊:通知")
             true
         }
 
@@ -88,7 +92,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean { // Inflate the menu; this adds items to the action bar if it is present.
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.edit_menu, menu)
         return true
     }
@@ -118,11 +123,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        if (item.title == "SubMenu Item 1") {
+            Toast.makeText(applicationContext, "you selected me!", Toast.LENGTH_SHORT).show()
+        }
+
         when (item.itemId) {
-            R.id.subitem_04 -> Toast.makeText(applicationContext, "123", Toast.LENGTH_SHORT).show()
-            R.id.subitem_05 -> Toast.makeText(applicationContext, "456", Toast.LENGTH_SHORT).show()
+            R.id.svt_overview -> Toast.makeText(applicationContext, "123", Toast.LENGTH_SHORT).show()
+            R.id.ce_overview -> Toast.makeText(applicationContext, "456", Toast.LENGTH_SHORT).show()
             else -> Toast.makeText(applicationContext, "gone", Toast.LENGTH_SHORT).show()
         }
+
         return true
     }
 
@@ -131,7 +141,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
+        val menu: Menu = nav_view.menu
+        val subMenu: SubMenu = menu.addSubMenu(1,1,0,"当前活动")
+        for (i in 1..2) {
+            subMenu.add("SubMenu Item $i")
+        }
+
         setDrawer()
+
         swipeLayout.setColorSchemeResources(R.color.colorPrimary);
         setQueryListener()
         supportActionBar?.setDisplayShowTitleEnabled(false)

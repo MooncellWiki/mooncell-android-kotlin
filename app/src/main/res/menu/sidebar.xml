@@ -2,20 +2,88 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-    <item android:title="SubItems">
-        <menu>
-            <item
-                android:id="@+id/subitem_04"
-                android:icon="@mipmap/ic_launcher"
-                android:title="SubItem04" />
-            <item
-                android:id="@+id/subitem_05"
-                android:icon="@mipmap/ic_launcher"
-                android:title="SubItem05" />
-            <item
-                android:id="@+id/subitem_06"
-                android:icon="@mipmap/ic_launcher"
-                android:title="SubItem06" />
-        </menu>
-    </item>
+    <group
+        android:id="@+id/group2"
+        android:orderInCategory="80">
+        <item android:title="@string/sidebar_group2_title">
+            <menu>
+                <item
+                    android:id="@+id/svt_overview"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/svt_overview" />
+                <item
+                    android:id="@+id/ce_overview"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/ce_overview" />
+                <item
+                    android:id="@+id/cc_overview"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/cc_overview" />
+                <item
+                    android:id="@+id/weekly_mission"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/weekly_mission" />
+                <item
+                    android:id="@+id/new_cards"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/new_cards" />
+                <item
+                    android:id="@+id/simulate_gacha"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/simulate_gacha" />
+                <item
+                    android:id="@+id/quest"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/quest" />
+                <item
+                    android:id="@+id/enemy_overview"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/enemy_overview" />
+                <item
+                    android:id="@+id/items_overview"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/items_overview" />
+                <item
+                    android:id="@+id/skill_overview"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/skill_overview" />
+                <item
+                    android:id="@+id/mst_equip"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/mst_equip" />
+                <item
+                    android:id="@+id/clothes_overview"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/clothes_overview" />
+                <item
+                    android:id="@+id/music_overview"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/music_overview" />
+                <item
+                    android:id="@+id/cv_overview"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/cv_overview" />
+                <item
+                    android:id="@+id/illust_overview"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/illust_overview" />
+                <item
+                    android:id="@+id/jp_client_dl"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/jp_client_dl" />
+                <item
+                    android:id="@+id/sponsor"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/sponsor" />
+                <item
+                    android:id="@+id/faq"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/faq" />
+                <item
+                    android:id="@+id/comment"
+                    android:icon="@mipmap/ic_launcher"
+                    android:title="@string/comment" />
+            </menu>
+        </item>
+    </group>
 </menu>
