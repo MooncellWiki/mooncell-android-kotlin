@@ -9,11 +9,11 @@
         android:title="@string/action_notice"
         app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/action_favorite"
-        android:icon="@drawable/ic_action_favorite_empty"
-        android:title="@string/action_favorite"
-        app:showAsAction="ifRoom"/>
+<!--    <item-->
+<!--        android:id="@+id/action_favorite"-->
+<!--        android:icon="@drawable/ic_action_favorite_empty"-->
+<!--        android:title="@string/action_favorite"-->
+<!--        app:showAsAction="ifRoom"/>-->
 
     <item android:id="@+id/action_login"
         android:title="@string/action_login"

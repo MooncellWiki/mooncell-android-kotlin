@@ -63,8 +63,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val MY_PERMISSIONS_MIPUSH_GROUP = 1
 
-    private var isHideFloat: Boolean = false
-
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_float -> {
             if (PermissionUtils.checkPermission(this)) {
@@ -94,9 +92,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     })
                     .setShowPattern(ShowPattern.ALL_TIME)
                     .show()
-//                if (isHideFloat) {
-//                    EasyFloat.showAppFloat("Float1")
-//                }
             } else {
                 AlertDialog.Builder(this)
                     .setMessage("使用浮窗功能，需要您授权悬浮窗权限。")
@@ -123,7 +118,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             webView.loadUrl("https://fgo.wiki/w/Mooncell:关于")
             true
         }
-
+//TODO
 //        R.id.action_share -> {
 //            val clipboard =
 //                getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -133,21 +128,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //            Snackbar.make(webView, "已复制到剪切板", Snackbar.LENGTH_SHORT).show()
 //            true
 //        }
-
-        R.id.action_favorite -> {
-            if (!isChecked) {
-                my_toolbar.menu.findItem(R.id.action_favorite).icon =
-                    ContextCompat.getDrawable(this, R.drawable.ic_action_favorite)
-                isChecked = true
-                Snackbar.make(webView, "收藏成功", Snackbar.LENGTH_SHORT).show()
-            } else {
-                my_toolbar.menu.findItem(R.id.action_favorite).icon =
-                    ContextCompat.getDrawable(this, R.drawable.ic_action_favorite_empty)
-                isChecked = false
-                Snackbar.make(webView, "取消收藏", Snackbar.LENGTH_SHORT).show()
-            }
-            true
-        }
+//TODO
+//        R.id.action_favorite -> {
+//            if (!isChecked) {
+//                my_toolbar.menu.findItem(R.id.action_favorite).icon =
+//                    ContextCompat.getDrawable(this, R.drawable.ic_action_favorite)
+//                isChecked = true
+//                Snackbar.make(webView, "收藏成功", Snackbar.LENGTH_SHORT).show()
+//            } else {
+//                my_toolbar.menu.findItem(R.id.action_favorite).icon =
+//                    ContextCompat.getDrawable(this, R.drawable.ic_action_favorite_empty)
+//                isChecked = false
+//                Snackbar.make(webView, "取消收藏", Snackbar.LENGTH_SHORT).show()
+//            }
+//            true
+//        }
 
         else -> {
             // If we got here, the user's action was not recognized.
