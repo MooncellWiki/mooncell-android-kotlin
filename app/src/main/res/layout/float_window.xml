@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rlContent"
     android:layout_width="360dp"
-    android:layout_height="360dp"
+    android:layout_height="400dp"
     android:background="#000000"
     android:orientation="vertical">
 

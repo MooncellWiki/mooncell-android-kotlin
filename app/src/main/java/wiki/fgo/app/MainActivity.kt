@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -39,6 +40,7 @@ import com.lzf.easyfloat.interfaces.OnPermissionResult
 import com.lzf.easyfloat.permission.PermissionUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.float_window.*
+import kotlinx.android.synthetic.main.float_window.view.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -68,9 +70,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (PermissionUtils.checkPermission(this)) {
                 EasyFloat.with(this)
                     .setLayout(R.layout.float_window, OnInvokeView {
+                        it.findViewById<WebView>(R.id.float_webView).setFloatWebView()
                         val url =
                             "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
-                        // Set web view client
                         it.findViewById<WebView>(R.id.float_webView).loadUrl(url)
                         it.findViewById<ImageView>(R.id.ivClose).setOnClickListener {
                             EasyFloat.dismissAppFloat()
@@ -79,8 +81,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             .setOnCheckedChangeListener { _, isChecked ->
                                 EasyFloat.appFloatDragEnable(isChecked)
                             }
-                        loadFloatWebView()
-                        setFloatWebView()
                     })
                     .setShowPattern(ShowPattern.ALL_TIME)
                     .show()
@@ -317,78 +317,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         webView.fitsSystemWindows = true
     }
 
-    private fun loadFloatWebView() {
-        float_webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                if (Uri.parse(url).host == "fgo.wiki") {
-                    // This is my web site, so do not override; let my WebView load the page
-                    return false
-                }
-                // Otherwise, the link is not for a page on my site, so launch another Activity that handles URLs
-                Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                    startActivity(this)
-                }
-                return true
-            }
-        }
-
-        float_webView.webChromeClient = object : WebChromeClient() {
-            override fun onCreateWindow(
-                view: WebView,
-                dialog: Boolean,
-                userGesture: Boolean,
-                resultMsg: Message?
-            ): Boolean {
-                val result: WebView.HitTestResult = view.hitTestResult
-                val data: String? = result.extra
-                val context = view.context
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data))
-                context.startActivity(browserIntent)
-                return false
-            }
-        }
-    }
-
-    private fun setFloatWebView() {
-        // Get the web view settings instance
-        val settings_float = float_webView.settings
-        //5.0以上开启混合模式加载
-        settings_float.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-        settings_float.javaScriptEnabled = true
-        // Enable and setup web view cache
-        settings_float.setAppCacheEnabled(true)
-        settings_float.cacheMode = WebSettings.LOAD_DEFAULT
-        settings_float.setAppCachePath(cacheDir.path)
-        settings_float.setSupportZoom(false)
-        // Enable zooming in web view
-        settings_float.builtInZoomControls = false
-        settings_float.displayZoomControls = false
-        // Enable disable images in web view
-        settings_float.blockNetworkImage = false
-        // Whether the WebView should load image resources
-        settings_float.loadsImagesAutomatically = true
-        //设置UA
-        settings_float.userAgentString =
-            settings_float.userAgentString + " mooncellApp/" + BuildConfig.VERSION_NAME
-        // More web view settings
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            settings_float.safeBrowsingEnabled = true
-        }
-        settings_float.useWideViewPort = true
-        settings_float.loadWithOverviewMode = true
-        settings_float.javaScriptCanOpenWindowsAutomatically = true
-        // More optional settings, you can enable it by yourself
-        settings_float.domStorageEnabled = true
-        settings_float.setSupportMultipleWindows(true)
-        settings_float.loadWithOverviewMode = true
-        settings_float.setGeolocationEnabled(true)
-        settings_float.allowFileAccess = true
-        settings_float.javaScriptCanOpenWindowsAutomatically = true
-        settings_float.setSupportMultipleWindows(true)
-        //webview setting
-        float_webView.fitsSystemWindows = true
-    }
-
     private fun setQueryListener() {
         m_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -547,5 +475,74 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.e("debug", isOpen.toString())
             }
         })
+    }
+}
+
+private fun WebView.setFloatWebView() {
+    // Get the web view settings instance
+    val settings_float = float_webView.settings
+    //5.0以上开启混合模式加载
+    settings_float.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+    settings_float.javaScriptEnabled = true
+    // Enable and setup web view cache
+    settings_float.setAppCacheEnabled(true)
+    settings_float.cacheMode = WebSettings.LOAD_DEFAULT
+    settings_float.setSupportZoom(false)
+    // Enable zooming in web view
+    settings_float.builtInZoomControls = false
+    settings_float.displayZoomControls = false
+    // Enable disable images in web view
+    settings_float.blockNetworkImage = false
+    // Whether the WebView should load image resources
+    settings_float.loadsImagesAutomatically = true
+    //设置UA
+    settings_float.userAgentString =
+        settings_float.userAgentString + " mooncellApp/" + BuildConfig.VERSION_NAME
+    // More web view settings
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        settings_float.safeBrowsingEnabled = true
+    }
+    settings_float.useWideViewPort = true
+    settings_float.loadWithOverviewMode = true
+    settings_float.javaScriptCanOpenWindowsAutomatically = true
+    // More optional settings, you can enable it by yourself
+    settings_float.domStorageEnabled = true
+    settings_float.setSupportMultipleWindows(true)
+    settings_float.loadWithOverviewMode = true
+    settings_float.setGeolocationEnabled(true)
+    settings_float.allowFileAccess = true
+    settings_float.javaScriptCanOpenWindowsAutomatically = true
+    settings_float.setSupportMultipleWindows(true)
+    //webview setting
+    float_webView.fitsSystemWindows = true
+
+    float_webView.webViewClient = object : WebViewClient() {
+        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+            if (Uri.parse(url).host == "fgo.wiki") {
+                // This is my web site, so do not override; let my WebView load the page
+                return false
+            }
+            // Otherwise, the link is not for a page on my site, so launch another Activity that handles URLs
+            Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                Log.e("debug","overwriteURL")
+            }
+            return true
+        }
+    }
+
+    float_webView.webChromeClient = object : WebChromeClient() {
+        override fun onCreateWindow(
+            view: WebView,
+            dialog: Boolean,
+            userGesture: Boolean,
+            resultMsg: Message?
+        ): Boolean {
+            val result: WebView.HitTestResult = view.hitTestResult
+            val data: String? = result.extra
+            val context = view.context
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data))
+            context.startActivity(browserIntent)
+            return false
+        }
     }
 }
