@@ -16,14 +16,15 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.CheckBox
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -39,7 +40,6 @@ import com.lzf.easyfloat.interfaces.OnInvokeView
 import com.lzf.easyfloat.interfaces.OnPermissionResult
 import com.lzf.easyfloat.permission.PermissionUtils
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.float_window.*
 import kotlinx.android.synthetic.main.float_window.view.*
 import okhttp3.Call
 import okhttp3.Callback
@@ -81,12 +81,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             .setOnCheckedChangeListener { _, isChecked ->
                                 EasyFloat.appFloatDragEnable(isChecked)
                             }
+                        val content = it.findViewById<RelativeLayout>(R.id.rlContent)
+                        val params = content.layoutParams as FrameLayout.LayoutParams
+                        it.findViewById<ScaleImage>(R.id.ivScale).onScaledListener =
+                            object : ScaleImage.OnScaledListener {
+                                override fun onScaled(x: Float, y: Float, event: MotionEvent) {
+                                    params.width += x.toInt()
+                                    params.height += y.toInt()
+                                    content.layoutParams = params
+                                }
+                            }
                     })
                     .setShowPattern(ShowPattern.ALL_TIME)
                     .show()
-                if (isHideFloat) {
-                    EasyFloat.showAppFloat("Float1")
-                }
+//                if (isHideFloat) {
+//                    EasyFloat.showAppFloat("Float1")
+//                }
             } else {
                 AlertDialog.Builder(this)
                     .setMessage("使用浮窗功能，需要您授权悬浮窗权限。")
@@ -524,7 +534,7 @@ private fun WebView.setFloatWebView() {
             }
             // Otherwise, the link is not for a page on my site, so launch another Activity that handles URLs
             Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                Log.e("debug","overwriteURL")
+                Log.e("debug", "overwriteURL")
             }
             return true
         }

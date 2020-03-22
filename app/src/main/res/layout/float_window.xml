@@ -4,7 +4,7 @@
     android:id="@+id/rlContent"
     android:layout_width="360dp"
     android:layout_height="400dp"
-    android:background="#000000"
+    android:background="@color/cardview_dark_background"
     android:orientation="vertical">
 
     <ImageView
@@ -19,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="true"
+        android:theme="@style/MyCheckBox"
         android:text="是否可拖拽"
         android:textColor="@color/white" />
 
@@ -29,5 +30,14 @@
         android:layout_below="@id/checkbox"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="parent" />
+
+    <wiki.fgo.app.ScaleImage
+        android:id="@+id/ivScale"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:padding="8dp"
+        android:src="@drawable/ic_scale" />
 
 </RelativeLayout>
