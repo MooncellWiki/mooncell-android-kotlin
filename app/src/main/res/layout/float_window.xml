@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rlContent"
+    android:layout_width="360dp"
+    android:layout_height="360dp"
+    android:background="#000000"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/ivClose"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentEnd="true"
+        android:padding="10dp"
+        android:src="@drawable/ic_x" />
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="是否可拖拽"
+        android:textColor="@color/white" />
+
+    <WebView
+        android:id="@+id/float_webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/checkbox"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="parent" />
+
+</RelativeLayout>

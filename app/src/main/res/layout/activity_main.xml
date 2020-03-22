@@ -65,7 +65,6 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <!--            app:navigationIcon="@drawable/ic_action_reload"-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView

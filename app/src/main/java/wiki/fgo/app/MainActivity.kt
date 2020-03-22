@@ -15,7 +15,10 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.CheckBox
+import android.widget.ImageView
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
@@ -29,7 +32,13 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.JsonElement
+import com.lzf.easyfloat.EasyFloat
+import com.lzf.easyfloat.enums.ShowPattern
+import com.lzf.easyfloat.interfaces.OnInvokeView
+import com.lzf.easyfloat.interfaces.OnPermissionResult
+import com.lzf.easyfloat.permission.PermissionUtils
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.float_window.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -52,9 +61,41 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val MY_PERMISSIONS_MIPUSH_GROUP = 1
 
+    private var isHideFloat: Boolean = false
+
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.action_settings -> {
-            // User chose the "Settings" item, show the app settings UI...
+        R.id.action_float -> {
+            if (PermissionUtils.checkPermission(this)) {
+                EasyFloat.with(this)
+                    .setLayout(R.layout.float_window, OnInvokeView {
+                        val url =
+                            "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
+                        // Set web view client
+                        it.findViewById<WebView>(R.id.float_webView).loadUrl(url)
+                        it.findViewById<ImageView>(R.id.ivClose).setOnClickListener {
+                            EasyFloat.dismissAppFloat()
+                        }
+                        it.findViewById<CheckBox>(R.id.checkbox)
+                            .setOnCheckedChangeListener { _, isChecked ->
+                                EasyFloat.appFloatDragEnable(isChecked)
+                            }
+                        loadFloatWebView()
+                        setFloatWebView()
+                    })
+                    .setShowPattern(ShowPattern.ALL_TIME)
+                    .show()
+                if (isHideFloat) {
+                    EasyFloat.showAppFloat("Float1")
+                }
+            } else {
+                AlertDialog.Builder(this)
+                    .setMessage("使用浮窗功能，需要您授权悬浮窗权限。")
+                    .setPositiveButton("去开启") { _, _ ->
+                        requestPermission()
+                    }
+                    .setNegativeButton("取消") { _, _ -> }
+                    .show()
+            }
             true
         }
 
@@ -174,7 +215,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         checkPermissions()
         setSupportActionBar(findViewById(R.id.my_toolbar))
-
         setDrawer()
         swipeLayout.setColorSchemeResources(R.color.colorPrimary)
         sendRequestWithOkHttp("https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1")
@@ -277,6 +317,78 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         webView.fitsSystemWindows = true
     }
 
+    private fun loadFloatWebView() {
+        float_webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                if (Uri.parse(url).host == "fgo.wiki") {
+                    // This is my web site, so do not override; let my WebView load the page
+                    return false
+                }
+                // Otherwise, the link is not for a page on my site, so launch another Activity that handles URLs
+                Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                    startActivity(this)
+                }
+                return true
+            }
+        }
+
+        float_webView.webChromeClient = object : WebChromeClient() {
+            override fun onCreateWindow(
+                view: WebView,
+                dialog: Boolean,
+                userGesture: Boolean,
+                resultMsg: Message?
+            ): Boolean {
+                val result: WebView.HitTestResult = view.hitTestResult
+                val data: String? = result.extra
+                val context = view.context
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data))
+                context.startActivity(browserIntent)
+                return false
+            }
+        }
+    }
+
+    private fun setFloatWebView() {
+        // Get the web view settings instance
+        val settings_float = float_webView.settings
+        //5.0以上开启混合模式加载
+        settings_float.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        settings_float.javaScriptEnabled = true
+        // Enable and setup web view cache
+        settings_float.setAppCacheEnabled(true)
+        settings_float.cacheMode = WebSettings.LOAD_DEFAULT
+        settings_float.setAppCachePath(cacheDir.path)
+        settings_float.setSupportZoom(false)
+        // Enable zooming in web view
+        settings_float.builtInZoomControls = false
+        settings_float.displayZoomControls = false
+        // Enable disable images in web view
+        settings_float.blockNetworkImage = false
+        // Whether the WebView should load image resources
+        settings_float.loadsImagesAutomatically = true
+        //设置UA
+        settings_float.userAgentString =
+            settings_float.userAgentString + " mooncellApp/" + BuildConfig.VERSION_NAME
+        // More web view settings
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            settings_float.safeBrowsingEnabled = true
+        }
+        settings_float.useWideViewPort = true
+        settings_float.loadWithOverviewMode = true
+        settings_float.javaScriptCanOpenWindowsAutomatically = true
+        // More optional settings, you can enable it by yourself
+        settings_float.domStorageEnabled = true
+        settings_float.setSupportMultipleWindows(true)
+        settings_float.loadWithOverviewMode = true
+        settings_float.setGeolocationEnabled(true)
+        settings_float.allowFileAccess = true
+        settings_float.javaScriptCanOpenWindowsAutomatically = true
+        settings_float.setSupportMultipleWindows(true)
+        //webview setting
+        float_webView.fitsSystemWindows = true
+    }
+
     private fun setQueryListener() {
         m_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -346,7 +458,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val pattern = "<p>(.*)</p>"
             val matcher: Matcher = Pattern.compile(pattern).matcher(sourceText)
 
-            Log.e("test", json["parse"]["text"]["*"].toString())
+            Log.e("debug", json["parse"]["text"]["*"].toString())
             if (matcher.find()) {
                 result = matcher.group(1)?.toString()
             }
@@ -427,5 +539,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             // Permission has already been granted
         }
+    }
+
+    private fun requestPermission() {
+        PermissionUtils.requestPermission(this, object : OnPermissionResult {
+            override fun permissionResult(isOpen: Boolean) {
+                Log.e("debug", isOpen.toString())
+            }
+        })
     }
 }

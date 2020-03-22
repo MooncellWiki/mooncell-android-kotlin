@@ -9,12 +9,6 @@
         android:title="@string/action_notice"
         app:showAsAction="ifRoom"/>
 
-<!--    <item-->
-<!--        android:id="@+id/action_share"-->
-<!--        android:icon="@drawable/ic_action_share"-->
-<!--        android:title="@string/action_share"-->
-<!--        app:showAsAction="ifRoom"/>-->
-
     <item
         android:id="@+id/action_favorite"
         android:icon="@drawable/ic_action_favorite_empty"
@@ -25,8 +19,8 @@
         android:title="@string/action_login"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+    <item android:id="@+id/action_float"
+        android:title="@string/action_float"
         app:showAsAction="never"/>
 
     <item android:id="@+id/action_about"
