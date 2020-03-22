@@ -28,6 +28,7 @@ allprojects {
         google()  // Google's Maven repository
         // Add the Bintray repository
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 
