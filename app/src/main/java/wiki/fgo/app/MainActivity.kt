@@ -126,6 +126,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             true
         }
 
+        R.id.action_exit -> {
+            finish()
+            true
+        }
+
 //DEPRECATED. Served by frontend
 //        R.id.action_share -> {
 //            val clipboard =
@@ -586,7 +591,7 @@ private fun WebView.setFloatWebView() {
     settingsFloat.javaScriptEnabled = true
     // Enable and setup web view cache
     settingsFloat.setAppCacheEnabled(true)
-    settingsFloat.cacheMode = WebSettings.LOAD_NO_CACHE
+    settingsFloat.cacheMode = WebSettings.LOAD_DEFAULT
     settingsFloat.setSupportZoom(false)
     // Enable zooming in web view
     settingsFloat.builtInZoomControls = false
