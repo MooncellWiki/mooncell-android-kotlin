@@ -300,7 +300,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val temp: List<String> = cookieStr.split(";")
                 for (ar1 in temp) {
                     val temp1 = ar1.split("=").toTypedArray()
-                    cookieMap[temp1[0].replace(" ","")] = temp1[1]
+                    cookieMap[temp1[0].replace(" ", "")] = temp1[1]
                 }
                 userName = cookieMap["my_wiki_fateUserName"]
                 loggedUserId = cookieMap["my_wiki_fateUserID"]
@@ -426,12 +426,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             headIv.minimumWidth = 220
             Glide.with(this)
                 .load(loggedUserId?.let { it1 -> avatarUrlConcat(it1) })
-                .transition(withCrossFade())
-                .into(headIv)
-        }
-        else {
-            Glide.with(this)
-                .load(avatarUrlConcat("1145141919810"))
                 .transition(withCrossFade())
                 .into(headIv)
         }
@@ -581,7 +575,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun requestAvatarFromServer() {
         val avatarUrl = loggedUserId?.let { avatarUrlConcat(it) }
-        var conn : HttpURLConnection? = null
+        var conn: HttpURLConnection? = null
         try {
             conn = URL(avatarUrl).openConnection() as HttpURLConnection
             conn.connect()
@@ -590,16 +584,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     input.copyTo(output)
                 }
             }
-        }catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
-        }finally {
+        } finally {
             conn?.disconnect()
         }
     }
 
     private fun writeLogUserPreference() {
         val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
-        with (sharedPref.edit()) {
+        with(sharedPref.edit()) {
             putString(getString(R.string.local_log_userId), loggedUserId)
             apply()
         }

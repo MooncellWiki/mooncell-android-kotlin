@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Build
 
-class Network_Receiver : BroadcastReceiver() {
+class NetworkReceiver : BroadcastReceiver() {
     private val isConn = false
     override fun onReceive(context: Context, intent: Intent) {
         println("网络状态发生变化")
