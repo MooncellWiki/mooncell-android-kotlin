@@ -35,18 +35,22 @@ class ContentHandler : DefaultHandler() {
 
     @Throws(SAXException::class)
     override fun characters(ch: CharArray, start: Int, length: Int) {
-        if("id".equals(nodeName)) {
-            id?.append(ch,start,length)
-        }else if("name".equals(nodeName)) {
-            name?.append(ch,start,length)
-        }else if("version".equals(nodeName)) {
-            version?.append(ch, start, length)
+        when (nodeName) {
+            "id" -> {
+                id?.append(ch,start,length)
+            }
+            "name" -> {
+                name?.append(ch,start,length)
+            }
+            "version" -> {
+                version?.append(ch, start, length)
+            }
         }
     }
 
     @Throws(SAXException::class)
     override fun endElement(uri: String, localName: String, qName: String) {
-        if("app".equals(localName)) {
+        if("app" == localName) {
             Log.d("ContentHandler","id is :" + id?.toString()?.trim())
             Log.d("ContentHandler","name is :" + name?.toString()?.trim())
             Log.d("ContentHandler","version is :" + version?.toString()?.trim())

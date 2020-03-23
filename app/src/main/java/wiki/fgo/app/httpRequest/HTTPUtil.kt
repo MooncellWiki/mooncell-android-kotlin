@@ -27,17 +27,11 @@ class HTTPUtil {
                         var responseData = StringBuilder()
                         var allText = reader.use(BufferedReader::readText)
                         responseData.append(allText)
-                        if(callback!=null) {
-                            callback.onFinish(responseData.toString())
-                        }
+                        callback?.onFinish(responseData.toString())
                     }catch (ex: Exception) {
-                        if(callback!=null) {
-                            callback.onError(ex)
-                        }
+                        callback?.onError(ex)
                     }finally {
-                        if(connection!=null) {
-                            connection.disconnect()
-                        }
+                        connection?.disconnect()
                     }
                 }
             }).start()
