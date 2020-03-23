@@ -46,7 +46,7 @@ import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private var isChecked: Boolean = false
+//    private var isChecked: Boolean = false
 
     private var cssLayer: String =
         "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
@@ -491,39 +491,39 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 private fun WebView.setFloatWebView() {
     // Get the web view settings instance
-    val settings_float = float_webView.settings
+    val settingsFloat = float_webView.settings
     //5.0以上开启混合模式加载
-    settings_float.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-    settings_float.javaScriptEnabled = true
+    settingsFloat.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+    settingsFloat.javaScriptEnabled = true
     // Enable and setup web view cache
-    settings_float.setAppCacheEnabled(true)
-    settings_float.cacheMode = WebSettings.LOAD_DEFAULT
-    settings_float.setSupportZoom(false)
+    settingsFloat.setAppCacheEnabled(true)
+    settingsFloat.cacheMode = WebSettings.LOAD_DEFAULT
+    settingsFloat.setSupportZoom(false)
     // Enable zooming in web view
-    settings_float.builtInZoomControls = false
-    settings_float.displayZoomControls = false
+    settingsFloat.builtInZoomControls = false
+    settingsFloat.displayZoomControls = false
     // Enable disable images in web view
-    settings_float.blockNetworkImage = false
+    settingsFloat.blockNetworkImage = false
     // Whether the WebView should load image resources
-    settings_float.loadsImagesAutomatically = true
+    settingsFloat.loadsImagesAutomatically = true
     //设置UA
-    settings_float.userAgentString =
-        settings_float.userAgentString + " mooncellApp/" + BuildConfig.VERSION_NAME
+    settingsFloat.userAgentString =
+        settingsFloat.userAgentString + " mooncellApp/" + BuildConfig.VERSION_NAME
     // More web view settings
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        settings_float.safeBrowsingEnabled = true
+        settingsFloat.safeBrowsingEnabled = true
     }
-    settings_float.useWideViewPort = true
-    settings_float.loadWithOverviewMode = true
-    settings_float.javaScriptCanOpenWindowsAutomatically = true
+    settingsFloat.useWideViewPort = true
+    settingsFloat.loadWithOverviewMode = true
+    settingsFloat.javaScriptCanOpenWindowsAutomatically = true
     // More optional settings, you can enable it by yourself
-    settings_float.domStorageEnabled = true
-    settings_float.setSupportMultipleWindows(true)
-    settings_float.loadWithOverviewMode = true
-    settings_float.setGeolocationEnabled(true)
-    settings_float.allowFileAccess = true
-    settings_float.javaScriptCanOpenWindowsAutomatically = true
-    settings_float.setSupportMultipleWindows(true)
+    settingsFloat.domStorageEnabled = true
+    settingsFloat.setSupportMultipleWindows(true)
+    settingsFloat.loadWithOverviewMode = true
+    settingsFloat.setGeolocationEnabled(true)
+    settingsFloat.allowFileAccess = true
+    settingsFloat.javaScriptCanOpenWindowsAutomatically = true
+    settingsFloat.setSupportMultipleWindows(true)
     //webview setting
     float_webView.fitsSystemWindows = true
 
