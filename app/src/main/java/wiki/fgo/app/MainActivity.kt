@@ -252,6 +252,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         loadWebView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        //1 = 注册失败(没网);1 = 广播还没注册
+        if (BaseActivity.pushState == 1 && BaseActivity.broadcastNet_State == 1) {
+            println("在首页注册广播")
+            val msg = BaseActivity.AppHandler!!.obtainMessage()
+            msg.what = 2
+            BaseActivity.AppHandler!!.sendMessage(msg)
+        } else {
+            println("不用在首页注册广播")
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        //2 = 广播已注册
+        if (BaseActivity.broadcastNet_State == 2) {
+            println("在首页注销广播")
+            val msg = BaseActivity.AppHandler!!.obtainMessage()
+            msg.what = 3
+            BaseActivity.AppHandler!!.sendMessage(msg)
+        } else {
+            println("不用在首页注销广播")
+        }
+    }
+
     private fun loadWebView() {
         val url = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
         // Set web view client
