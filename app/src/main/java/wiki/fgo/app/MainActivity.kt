@@ -2,6 +2,7 @@ package wiki.fgo.app
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ClipData
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -45,8 +47,9 @@ import java.util.regex.Pattern
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
 //    private var isChecked: Boolean = false
+
+    var userName: String? = null
 
     private var cssLayer: String =
         "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
@@ -149,6 +152,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.edit_menu, menu)
+        if (userName != null) {
+            if (menu != null) {
+                menu.findItem(R.id.action_notice).isVisible = true
+            }
+        }
         return true
     }
 
@@ -239,21 +247,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                var cookieValue: String? = null
-
                 val cookieManager: CookieManager = CookieManager.getInstance()
                 val cookieStr: String = cookieManager.getCookie(url)
                 val temp: List<String> = cookieStr.split(";")
                 for (ar1 in temp) {
                     if (ar1.contains("my_wiki_fateUserName")) {
                         val temp1 = ar1.split("=").toTypedArray()
-                        cookieValue = temp1[1]
+                        userName = temp1[1]
                         break
                     }
                 }
-                if (cookieValue != null) {
-                    nav_header_title.text = cookieValue
-                    Toast.makeText(this@MainActivity, cookieValue, Toast.LENGTH_SHORT).show()
+                if (userName != null) {
+                    nav_header_title.text = userName
+                    invalidateOptionsMenu()
                 }
                 swipeLayout.isRefreshing = false
                 super.onPageFinished(view, url)
