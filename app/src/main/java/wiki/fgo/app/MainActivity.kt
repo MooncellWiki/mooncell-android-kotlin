@@ -2,6 +2,7 @@ package wiki.fgo.app
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -22,6 +23,9 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.github.salomonbrys.kotson.fromJson
 import com.github.salomonbrys.kotson.get
 import com.google.android.material.navigation.NavigationView
@@ -38,8 +42,12 @@ import kotlinx.android.synthetic.main.nav_header.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
-import wiki.fgo.app.httpRequest.HTTPUtil
+import wiki.fgo.app.HttpRequest.HTTPUtil
+import java.io.BufferedOutputStream
+import java.io.FileOutputStream
 import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -50,6 +58,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var cookieMap = mutableMapOf<String, String>()
 
     var userName: String? = null
+
+    var loggedUserId: String? = null
 
     private var cssLayer: String =
         "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
@@ -223,6 +233,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         checkPermissions()
         setSupportActionBar(findViewById(R.id.my_toolbar))
+        readLogUserPreference()
+        initDrawer()
         setDrawer()
         swipeLayout.setColorSchemeResources(R.color.colorPrimary)
         sendRequestWithOkHttp("https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1")
@@ -256,9 +268,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     cookieMap[temp1[0].replace(" ","")] = temp1[1]
                 }
                 userName = cookieMap["my_wiki_fateUserName"]
+                loggedUserId = cookieMap["my_wiki_fateUserID"]
                 if (userName != null) {
                     nav_header_title.text = userName
-                    //TODO: 头像从mc获取
+                    writeLogUserPreference()
                 }
                 invalidateOptionsMenu()
                 swipeLayout.isRefreshing = false
@@ -358,6 +371,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
+    private fun initDrawer() {
+        val headView: View = nav_view.inflateHeaderView(R.layout.nav_header)
+        val headIv: ImageView = headView.findViewById(R.id.imageView) as ImageView
+        headIv.setOnClickListener {
+            if (loggedUserId !== null) {
+                headIv.minimumHeight = 220
+                headIv.minimumWidth = 220
+                Glide.with(this)
+                    .load(loggedUserId?.let { it1 -> avatarUrlConcat(it1) })
+                    .transition(withCrossFade())
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(headIv)
+            }
+        }
+        if (loggedUserId !== null) {
+            headIv.minimumHeight = 220
+            headIv.minimumWidth = 220
+            Glide.with(this)
+                .load(loggedUserId?.let { it1 -> avatarUrlConcat(it1) })
+                .transition(withCrossFade())
+                .into(headIv)
+        }
+        else {
+            Glide.with(this)
+                .load(avatarUrlConcat("1145141919810"))
+                .transition(withCrossFade())
+                .into(headIv)
+        }
+    }
+
     private fun setDrawer() {
         nav_view.setNavigationItemSelectedListener(this)
         val toggle = ActionBarDrawerToggle(
@@ -373,6 +417,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun urlConcat(title: String): String {
         return "https://fgo.wiki/w/$title"
+    }
+
+    private fun avatarUrlConcat(userId: String): String {
+        return "http://avatar.mooncell.wiki/mc/$userId/original.png"
     }
 
     @SuppressLint("RtlHardcoded")
@@ -494,6 +542,38 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.e("debug", isOpen.toString())
             }
         })
+    }
+
+    private fun requestAvatarFromServer() {
+        val avatarUrl = loggedUserId?.let { avatarUrlConcat(it) }
+        var conn : HttpURLConnection? = null
+        try {
+            conn = URL(avatarUrl).openConnection() as HttpURLConnection
+            conn.connect()
+            conn.inputStream.use { input ->
+                BufferedOutputStream(FileOutputStream("./download.png")).use { output ->
+                    input.copyTo(output)
+                }
+            }
+        }catch (e : Exception){
+            e.printStackTrace()
+        }finally {
+            conn?.disconnect()
+        }
+    }
+
+    private fun writeLogUserPreference() {
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            putString(getString(R.string.local_log_userId), loggedUserId)
+            apply()
+        }
+    }
+
+    private fun readLogUserPreference() {
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
+        val logDefaultValue = resources.getString(R.string.local_log_userId_default)
+        loggedUserId = sharedPref.getString(getString(R.string.local_log_userId), logDefaultValue)
     }
 }
 

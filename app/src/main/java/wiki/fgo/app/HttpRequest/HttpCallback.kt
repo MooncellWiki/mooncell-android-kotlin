@@ -1,4 +1,4 @@
-package wiki.fgo.app.httpRequest
+package wiki.fgo.app.HttpRequest
 
 interface HttpCallback {
     fun onFinish(responseData: String)

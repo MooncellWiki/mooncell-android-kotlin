@@ -74,7 +74,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
-        app:headerLayout="@layout/nav_header"
         app:menu="@menu/sidebar" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
