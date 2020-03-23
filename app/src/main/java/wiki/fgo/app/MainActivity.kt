@@ -500,7 +500,7 @@ private fun WebView.setFloatWebView() {
     settingsFloat.javaScriptEnabled = true
     // Enable and setup web view cache
     settingsFloat.setAppCacheEnabled(true)
-    settingsFloat.cacheMode = WebSettings.LOAD_DEFAULT
+    settingsFloat.cacheMode = WebSettings.LOAD_NO_CACHE
     settingsFloat.setSupportZoom(false)
     // Enable zooming in web view
     settingsFloat.builtInZoomControls = false
