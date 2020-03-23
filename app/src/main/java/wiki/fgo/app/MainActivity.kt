@@ -7,13 +7,17 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
+import android.net.Uri.decode
 import android.os.Build
 import android.os.Bundle
 import android.os.Message
 import android.util.Log
 import android.view.*
 import android.webkit.*
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -275,7 +279,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 userName = cookieMap["my_wiki_fateUserName"]
                 loggedUserId = cookieMap["my_wiki_fateUserID"]
                 if (userName != null) {
-                    nav_header_title.text = userName
+                    nav_header_title.text = decode(userName).toString()
                     writeLogUserPreference()
                 }
                 invalidateOptionsMenu()
