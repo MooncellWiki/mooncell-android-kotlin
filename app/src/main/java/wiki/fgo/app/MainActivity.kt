@@ -11,14 +11,8 @@ import android.os.Bundle
 import android.os.Message
 import android.util.Log
 import android.view.*
-import android.webkit.WebChromeClient
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import android.widget.CheckBox
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.RelativeLayout
+import android.webkit.*
+import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -31,7 +25,6 @@ import androidx.navigation.ui.navigateUp
 import com.github.salomonbrys.kotson.fromJson
 import com.github.salomonbrys.kotson.get
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.lzf.easyfloat.EasyFloat
@@ -41,6 +34,7 @@ import com.lzf.easyfloat.interfaces.OnPermissionResult
 import com.lzf.easyfloat.permission.PermissionUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.float_window.view.*
+import kotlinx.android.synthetic.main.nav_header.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -96,7 +90,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 AlertDialog.Builder(this)
                     .setMessage("使用浮窗功能，需要您授权悬浮窗权限。")
                     .setPositiveButton("去开启") { _, _ ->
-                        requestPermission()
+                        requestFloatPermission()
                     }
                     .setNegativeButton("取消") { _, _ -> }
                     .show()
@@ -118,16 +112,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             webView.loadUrl("https://fgo.wiki/w/Mooncell:关于")
             true
         }
-//TODO
+
+//DEPRECATED. Served by frontend
 //        R.id.action_share -> {
 //            val clipboard =
 //                getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 //            val clip = ClipData.newPlainText("text", webView.url)
 //            clipboard.setPrimaryClip(clip)
-//
 //            Snackbar.make(webView, "已复制到剪切板", Snackbar.LENGTH_SHORT).show()
 //            true
 //        }
+
 //TODO
 //        R.id.action_favorite -> {
 //            if (!isChecked) {
@@ -238,13 +233,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 swipeLayout.setProgressViewEndTarget(false, 250)
                 swipeLayout.isRefreshing = true
+                Toast.makeText(this@MainActivity, webView.settings.userAgentString.toString(), Toast.LENGTH_SHORT).show()
                 super.onPageStarted(view, url, favicon)
                 webView.loadUrl(cssLayer)
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                webView.loadUrl(cssLayer)
+                var cookieValue: String? = null
+
+                val cookieManager: CookieManager = CookieManager.getInstance()
+                val cookieStr: String = cookieManager.getCookie(url)
+                val temp: List<String> = cookieStr.split(";")
+                for (ar1 in temp) {
+                    if (ar1.contains("my_wiki_fateUserName")) {
+                        val temp1 = ar1.split("=").toTypedArray()
+                        cookieValue = temp1[1]
+                        break
+                    }
+                }
+                if (cookieValue != null) {
+                    nav_header_title.text = cookieValue
+                    Toast.makeText(this@MainActivity, cookieValue, Toast.LENGTH_SHORT).show()
+                }
                 swipeLayout.isRefreshing = false
+                super.onPageFinished(view, url)
             }
 
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
@@ -439,9 +451,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             )
             != PackageManager.PERMISSION_GRANTED
         ) {
-
-            // Permission is not granted
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this@MainActivity,
                     Manifest.permission.READ_EXTERNAL_STORAGE
@@ -465,16 +474,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     ),
                     MY_PERMISSIONS_MIPUSH_GROUP
                 )
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
         } else {
             // Permission has already been granted
         }
     }
 
-    private fun requestPermission() {
+    private fun requestFloatPermission() {
         PermissionUtils.requestPermission(this, object : OnPermissionResult {
             override fun permissionResult(isOpen: Boolean) {
                 Log.e("debug", isOpen.toString())
