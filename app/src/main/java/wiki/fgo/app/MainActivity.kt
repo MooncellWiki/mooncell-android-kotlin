@@ -294,6 +294,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun setWebView() {
         // Get the web view settings instance
         val settings = webView.settings
@@ -379,6 +380,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    @SuppressLint("RtlHardcoded")
     private fun activityClickListener(item: MenuItem) {
         drawer_layout.closeDrawer(Gravity.LEFT)
         webView.loadUrl(urlConcat(item.title.toString()))
@@ -489,6 +491,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 }
 
+@SuppressLint("SetJavaScriptEnabled")
 private fun WebView.setFloatWebView() {
     // Get the web view settings instance
     val settingsFloat = float_webView.settings
