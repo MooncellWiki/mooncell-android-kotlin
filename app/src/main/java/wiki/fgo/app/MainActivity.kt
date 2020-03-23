@@ -2,7 +2,6 @@ package wiki.fgo.app
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ClipData
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -20,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -48,6 +46,8 @@ import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 //    private var isChecked: Boolean = false
+
+    var cookieMap = mutableMapOf<String, String>()
 
     var userName: String? = null
 
@@ -241,26 +241,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 swipeLayout.setProgressViewEndTarget(false, 250)
                 swipeLayout.isRefreshing = true
-                Toast.makeText(this@MainActivity, webView.settings.userAgentString.toString(), Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this@MainActivity, webView.settings.userAgentString.toString(), Toast.LENGTH_SHORT).show()
                 super.onPageStarted(view, url, favicon)
                 webView.loadUrl(cssLayer)
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
+                webView.loadUrl(cssLayer)
                 val cookieManager: CookieManager = CookieManager.getInstance()
                 val cookieStr: String = cookieManager.getCookie(url)
                 val temp: List<String> = cookieStr.split(";")
                 for (ar1 in temp) {
-                    if (ar1.contains("my_wiki_fateUserName")) {
-                        val temp1 = ar1.split("=").toTypedArray()
-                        userName = temp1[1]
-                        break
-                    }
+                    val temp1 = ar1.split("=").toTypedArray()
+                    cookieMap[temp1[0].replace(" ","")] = temp1[1]
                 }
+                userName = cookieMap["my_wiki_fateUserName"]
                 if (userName != null) {
                     nav_header_title.text = userName
-                    invalidateOptionsMenu()
+                    //TODO: 头像从mc获取
                 }
+                invalidateOptionsMenu()
                 swipeLayout.isRefreshing = false
                 super.onPageFinished(view, url)
             }
