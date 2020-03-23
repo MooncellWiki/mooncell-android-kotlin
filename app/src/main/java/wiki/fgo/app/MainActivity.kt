@@ -428,6 +428,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .load(loggedUserId?.let { it1 -> avatarUrlConcat(it1) })
                 .transition(withCrossFade())
                 .into(headIv)
+        } else {
+            Glide.with(this)
+                .load(avatarUrlConcat("1145141919810"))
+                .transition(withCrossFade())
+                .into(headIv)
         }
     }
 
