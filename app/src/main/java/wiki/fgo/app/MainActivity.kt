@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .show()
             } else {
                 AlertDialog.Builder(this)
-                    .setMessage("使用浮窗功能，需要您授权悬浮窗权限。")
+                    .setMessage("若要使用悬浮窗功能，您需要授权Mooncell悬浮窗权限。")
                     .setPositiveButton("去开启") { _, _ ->
                         requestFloatPermission()
                     }
@@ -210,6 +210,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.main_page -> closeDrawerAfterClick(item)
             R.id.svt_overview -> closeDrawerAfterClick(item)
             R.id.ce_overview -> closeDrawerAfterClick(item, "礼装图鉴")
             R.id.cc_overview -> closeDrawerAfterClick(item)
@@ -246,7 +247,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         initDrawer()
         setDrawer()
         swipeLayout.setColorSchemeResources(R.color.colorPrimary)
-        sendRequestWithOkHttp("https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1")
+        val sidebarFetchUrl =
+            "https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1"
+        sendRequestWithOkHttp(sidebarFetchUrl, 1)
+        val checkUpdateUrl =
+            "https://fgo.wiki/images/wiki/merlin/client/update.json"
+        sendRequestWithOkHttp(checkUpdateUrl, 2)
         setQueryListener()
         supportActionBar?.setDisplayShowTitleEnabled(false)
         loadWebView()
@@ -279,10 +285,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun loadWebView() {
-        val url = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
+        val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
         // Set web view client
         setWebView()
-        webView.loadUrl(url)
+        webView.loadUrl(mainUrl)
         WebView.setWebContentsDebuggingEnabled(true)
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -485,7 +491,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    fun parseJsonWithJsonObject(jsonData: String) {
+    fun parseSidebarJsonWithJsonObject(jsonData: String) {
         try {
             val json: JsonElement = Gson().fromJson(jsonData)
             val sourceText = json["parse"]["text"]["*"].toString()
@@ -506,7 +512,34 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun sendRequestWithOkHttp(url: String) {
+    fun parseUpdateJsonWithJsonObject(jsonData: String) {
+        try {
+            val json: JsonElement = Gson().fromJson(jsonData)
+            Log.e("debug", json.toString())
+
+            val remoteVersionCode = json["remoteVersionCode"].toString().toInt()
+            val localVersionCode = BuildConfig.VERSION_CODE
+            val title = json["title"]
+            val description = json["description"]
+
+            if (remoteVersionCode > localVersionCode) {
+                runOnUiThread {
+                    AlertDialog.Builder(this)
+                        .setTitle(title.asString)
+                        .setMessage(description.asString)
+                        .setPositiveButton("去更新") { _, _ ->
+                            webView.loadUrl("https://fgo.wiki/w/Mooncell:Appclient")
+                        }
+                        .setNegativeButton("取消") { _, _ -> }
+                        .show()
+                }
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
+
+    private fun sendRequestWithOkHttp(url: String, type: Int) {
         Thread(Runnable {
             try {
                 HTTPUtil.sendOkHttpRequest(
@@ -516,7 +549,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         override fun onResponse(call: Call?, response: Response?) {
                             val responseData = response?.body()?.string()
 
-                            parseJsonWithJsonObject(responseData!!)
+                            when (type) {
+                                1 -> parseSidebarJsonWithJsonObject(responseData!!)
+                                2 -> parseUpdateJsonWithJsonObject(responseData!!)
+                            }
                         }
 
                         override fun onFailure(call: Call?, e: IOException?) {

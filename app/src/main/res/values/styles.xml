@@ -5,6 +5,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+<!--        <item name="alertDialogTheme">@style/CustomAlertDialog</item>-->
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -23,11 +24,15 @@
         <item name="colorControlNormal">#ffffff</item>
     </style>
 
-
     <style name="MyCheckBox" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/white</item>
         <item name="colorControlActivated">@color/white</item>
     </style>
+
+<!--    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">-->
+<!--        <item name="colorAccent">@android:color/white</item>-->
+<!--        <item name="android:textColorPrimary">@android:color/white</item>-->
+<!--    </style>-->
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />
 

@@ -8,6 +8,10 @@
         <item android:title="@string/sidebar_group2_title">
             <menu>
                 <item
+                    android:id="@+id/main_page"
+                    android:icon="@drawable/ic_home"
+                    android:title="@string/main_page" />
+                <item
                     android:id="@+id/svt_overview"
                     android:icon="@drawable/ic_users"
                     android:title="@string/svt_overview" />
