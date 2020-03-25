@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.forEach
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -80,8 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 EasyFloat.with(this)
                     .setLayout(R.layout.float_window, OnInvokeView {
                         it.findViewById<WebView>(R.id.float_webView).setFloatWebView()
-                        val url =
-                            "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
+                        val url = webView.url
                         it.findViewById<WebView>(R.id.float_webView).loadUrl(url)
                         it.findViewById<ImageView>(R.id.ivClose).setOnClickListener {
                             EasyFloat.dismissAppFloat()
@@ -286,7 +286,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun loadWebView() {
         val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
-        // Set web view client
         setWebView()
         webView.loadUrl(mainUrl)
         WebView.setWebContentsDebuggingEnabled(true)
@@ -494,7 +493,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         webView.loadUrl(urlConcat(item.title.toString()))
     }
 
-    private fun showResponse(stringList: List<String>) {
+    private fun showSidebarResponse(stringList: List<String>) {
         runOnUiThread {
             val menu: Menu = nav_view.menu
             val subMenu: SubMenu = menu.addSubMenu(1, 1, 0, "当前活动")
@@ -519,7 +518,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             val resultArray = result?.replace("<br />\\n", "")?.split("<br />")
             if (resultArray != null) {
-                return showResponse(resultArray)
+                return showSidebarResponse(resultArray)
             }
         } catch (ex: Exception) {
             ex.printStackTrace()

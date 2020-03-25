@@ -74,6 +74,7 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
-        app:menu="@menu/sidebar" />
+        app:menu="@menu/sidebar"
+        app:theme="@style/SidebarTextAppearance"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
