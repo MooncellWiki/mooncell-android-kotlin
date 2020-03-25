@@ -321,7 +321,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                 writeLogUserPreference()
                             } catch (e: IllegalStateException) {
                                 nav_header_title.text = decode("岸波白野").toString()
-                                writeLogUserPreference()
+                                e.printStackTrace()
                             }
                         }
                         invalidateOptionsMenu()
