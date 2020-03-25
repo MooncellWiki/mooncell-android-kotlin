@@ -21,6 +21,10 @@ android {
         versionCode 2
         versionName "1.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        def MI_PUSH_APP_ID = project.hasProperty("MI_PUSH_APP_ID")
+        def MI_PUSH_APP_KEY = project.hasProperty("MI_PUSH_APP_KEY")
+        buildConfigField "String", "MI_PUSH_APP_ID", "\"${MI_PUSH_APP_ID}\""
+        buildConfigField "String", "MI_PUSH_APP_KEY", "\"${MI_PUSH_APP_KEY}\""
     }
     buildTypes {
         release {

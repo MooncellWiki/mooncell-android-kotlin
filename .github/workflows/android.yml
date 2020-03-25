@@ -18,4 +18,4 @@ jobs:
       with:
         java-version: 1.8
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build -PMI_PUSH_APP_ID=${{ secrets.MI_PUSH_APP_ID }} -PMI_PUSH_APP_KEY=${{ secrets.MI_PUSH_APP_KEY }}
