@@ -297,25 +297,39 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //                Toast.makeText(this@MainActivity, webView.settings.userAgentString.toString(), Toast.LENGTH_SHORT).show()
                 super.onPageStarted(view, url, favicon)
                 webView.loadUrl(cssLayer)
+                swipeLayout.isRefreshing = false
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 webView.loadUrl(cssLayer)
-                val cookieManager: CookieManager = CookieManager.getInstance()
-                val cookieStr: String = cookieManager.getCookie(url)
-                val temp: List<String> = cookieStr.split(";")
-                for (ar1 in temp) {
-                    val temp1 = ar1.split("=").toTypedArray()
-                    cookieMap[temp1[0].replace(" ", "")] = temp1[1]
+                try {
+                    val cookieManager: CookieManager = CookieManager.getInstance()
+                    if (cookieManager.getCookie(url) == null) {
+                        println("cookie is null")
+                    } else {
+                        val cookieStr: String = cookieManager.getCookie(url)
+                        val temp: List<String> = cookieStr.split(";")
+                        for (ar1 in temp) {
+                            val temp1 = ar1.split("=").toTypedArray()
+                            cookieMap[temp1[0].replace(" ", "")] = temp1[1]
+                        }
+                        userName = cookieMap["my_wiki_fateUserName"]
+                        loggedUserId = cookieMap["my_wiki_fateUserID"]
+                        if (userName != null) {
+                            try {
+                                nav_header_title.text = decode(userName).toString()
+                                writeLogUserPreference()
+                            } catch (e: IllegalStateException) {
+                                nav_header_title.text = decode("岸波白野").toString()
+                                e.printStackTrace()
+                            }
+                        }
+                        invalidateOptionsMenu()
+                    }
+                } catch (e: IllegalStateException) {
+                    println("处理 IllegalStateException")
+                    e.printStackTrace()
                 }
-                userName = cookieMap["my_wiki_fateUserName"]
-                loggedUserId = cookieMap["my_wiki_fateUserID"]
-                if (userName != null) {
-                    nav_header_title.text = decode(userName).toString()
-                    writeLogUserPreference()
-                }
-                invalidateOptionsMenu()
-                swipeLayout.isRefreshing = false
                 super.onPageFinished(view, url)
             }
 
@@ -333,8 +347,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         swipeLayout.setOnRefreshListener {
-            webView.loadUrl(cssLayer)
             webView.reload()
+            webView.loadUrl(cssLayer)
         }
 
         webView.webChromeClient = object : WebChromeClient() {
@@ -428,8 +442,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         if (loggedUserId !== null) {
-            headIv.minimumHeight = 220
-            headIv.minimumWidth = 220
+            headIv.minimumHeight = 180
+            headIv.minimumWidth = 180
             Glide.with(this)
                 .load(loggedUserId?.let { it1 -> avatarUrlConcat(it1) })
                 .transition(withCrossFade())
