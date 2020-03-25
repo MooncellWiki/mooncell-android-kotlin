@@ -2,5 +2,5 @@
 
 # Mooncell-Client-Kotlin
 
-app/src/main/java/wiki/fgo/app/BaseActivity.kt不在最新分支中。
-可查看：https://github.com/StarHeartHunt/Mooncell-Client-Kotlin/blob/f010bbda1b2743dc919c75cc7cf1a3bcac6ef494/app/src/main/java/wiki/fgo/app/BaseActivity.kt
+在File>Settings>BUILD,Execution,Deployment>Compiler>Command-line Options中添加
+-PMI_PUSH_APP_ID=yourMiPushAppId -PMI_PUSH_APP_KEY=yourMiPushAppKey
