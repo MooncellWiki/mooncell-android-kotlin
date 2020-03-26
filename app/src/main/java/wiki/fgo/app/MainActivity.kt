@@ -14,17 +14,13 @@ import android.os.Message
 import android.util.Log
 import android.view.*
 import android.webkit.*
-import android.widget.CheckBox
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.RelativeLayout
+import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.forEach
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -41,6 +37,8 @@ import com.lzf.easyfloat.enums.ShowPattern
 import com.lzf.easyfloat.interfaces.OnInvokeView
 import com.lzf.easyfloat.interfaces.OnPermissionResult
 import com.lzf.easyfloat.permission.PermissionUtils
+import com.yhao.floatwindow.FloatWindow
+import com.yhao.floatwindow.Screen
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.float_window.view.*
 import kotlinx.android.synthetic.main.nav_header.*
@@ -78,6 +76,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_float -> {
             if (PermissionUtils.checkPermission(this)) {
+                createFloatBall()
+                FloatWindow.get().hide()
                 EasyFloat.with(this)
                     .setLayout(R.layout.float_window, OnInvokeView {
                         it.findViewById<WebView>(R.id.float_webView).setFloatWebView()
@@ -85,11 +85,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         it.findViewById<WebView>(R.id.float_webView).loadUrl(url)
                         it.findViewById<ImageView>(R.id.ivClose).setOnClickListener {
                             EasyFloat.dismissAppFloat()
+                            FloatWindow.destroy()
                         }
                         it.findViewById<CheckBox>(R.id.checkbox)
                             .setOnCheckedChangeListener { _, isChecked ->
                                 EasyFloat.appFloatDragEnable(isChecked)
                             }
+                        it.findViewById<ImageView>(R.id.ivFloatBallCheck).setOnClickListener {
+                            EasyFloat.hideAppFloat()
+                            FloatWindow.get().show()
+                        }
                         val content = it.findViewById<RelativeLayout>(R.id.rlContent)
                         val params = content.layoutParams as FrameLayout.LayoutParams
                         it.findViewById<ScaleImage>(R.id.ivScale).onScaledListener =
@@ -657,6 +662,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
         val logDefaultValue = resources.getString(R.string.local_log_userId_default)
         loggedUserId = sharedPref.getString(getString(R.string.local_log_userId), logDefaultValue)
+    }
+
+    private fun createFloatBall() {
+        val floatBall = ImageView(applicationContext)
+        floatBall.setImageResource(R.mipmap.ic_launcher)
+        FloatWindow
+            .with(applicationContext)
+            .setView(floatBall)
+            .setWidth(150)
+            .setHeight(Screen.width, 0.2f)
+            .setX(300)
+            .setY(Screen.height, 0.3f)
+            .setDesktopShow(true)
+            .build()
+
+        floatBall.setOnClickListener {
+            EasyFloat.showAppFloat()
+            FloatWindow.get().hide()
+        }
     }
 }
 

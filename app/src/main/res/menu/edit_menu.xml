@@ -24,6 +24,10 @@
         android:title="@string/action_float"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>
+
     <item android:id="@+id/action_about"
         android:title="@string/action_about"
         app:showAsAction="never"/>
