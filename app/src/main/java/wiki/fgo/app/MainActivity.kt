@@ -57,7 +57,6 @@ import java.util.regex.Pattern
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-//    private var isChecked: Boolean = false
 
     var cookieMap = mutableMapOf<String, String>()
 
@@ -154,16 +153,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             finish()
             true
         }
-
-//DEPRECATED. Served by frontend
-//        R.id.action_share -> {
-//            val clipboard =
-//                getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-//            val clip = ClipData.newPlainText("text", webView.url)
-//            clipboard.setPrimaryClip(clip)
-//            Snackbar.make(webView, "已复制到剪切板", Snackbar.LENGTH_SHORT).show()
-//            true
-//        }
 
 //TODO
 //        R.id.action_favorite -> {
