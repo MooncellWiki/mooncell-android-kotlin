@@ -57,7 +57,6 @@ import java.util.regex.Pattern
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-//    private var isChecked: Boolean = false
 
     var cookieMap = mutableMapOf<String, String>()
 
