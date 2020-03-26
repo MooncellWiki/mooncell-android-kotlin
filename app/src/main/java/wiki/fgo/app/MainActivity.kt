@@ -682,7 +682,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun createFloatBall() {
         val floatBall = ImageView(applicationContext)
-        floatBall.setImageResource(R.mipmap.ic_launcher)
+        floatBall.setImageResource(R.mipmap.ic_float)
 
         FloatWindow
             .with(applicationContext)
