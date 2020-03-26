@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.net.Uri
 import android.net.Uri.decode
 import android.os.Build
@@ -15,7 +14,10 @@ import android.os.Message
 import android.util.Log
 import android.view.*
 import android.webkit.*
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +33,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withC
 import com.github.salomonbrys.kotson.fromJson
 import com.github.salomonbrys.kotson.get
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.lzf.easyfloat.EasyFloat
@@ -47,6 +50,7 @@ import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
 import wiki.fgo.app.HttpRequest.HTTPUtil
+import wiki.fgo.app.McWebview.WebviewSettings
 import java.io.BufferedOutputStream
 import java.io.FileOutputStream
 import java.io.IOException
@@ -256,6 +260,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         checkPermissions()
         setSupportActionBar(findViewById(R.id.my_toolbar))
+        val mTabLayout: TabLayout = findViewById(R.id.tab_layout)
+        // 添加 tab item
+        mTabLayout.addTab(mTabLayout.newTab().setText("TAB1"))
+        mTabLayout.addTab(mTabLayout.newTab().setText("TAB2"))
+        mTabLayout.addTab(mTabLayout.newTab().setText("TAB3"))
+        mTabLayout.addTab(mTabLayout.newTab().setText("TAB4"))
         readLogUserPreference()
         initDrawer()
         setDrawer()
@@ -299,7 +309,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun loadWebView() {
         val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
-        setWebView()
+        val cacheDirPath = cacheDir.path
+        WebviewSettings.setWebView(webView,cacheDirPath)
         webView.loadUrl(mainUrl)
         WebView.setWebContentsDebuggingEnabled(true)
         webView.webViewClient = object : WebViewClient() {
@@ -377,47 +388,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return false
             }
         }
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun setWebView() {
-        // Get the web view settings instance
-        val settings = webView.settings
-        //5.0以上开启混合模式加载
-        settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-        settings.javaScriptEnabled = true
-        // Enable and setup web view cache
-        settings.setAppCacheEnabled(true)
-        settings.cacheMode = WebSettings.LOAD_DEFAULT
-        settings.setAppCachePath(cacheDir.path)
-        settings.setSupportZoom(false)
-        // Enable zooming in web view
-        settings.builtInZoomControls = false
-        settings.displayZoomControls = false
-        // Enable disable images in web view
-        settings.blockNetworkImage = false
-        // Whether the WebView should load image resources
-        settings.loadsImagesAutomatically = true
-        //设置UA
-        settings.userAgentString =
-            settings.userAgentString + " mooncellApp/" + BuildConfig.VERSION_NAME
-        // More web view settings
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            settings.safeBrowsingEnabled = true
-        }
-        settings.useWideViewPort = true
-        settings.loadWithOverviewMode = true
-        settings.javaScriptCanOpenWindowsAutomatically = true
-        // More optional settings, you can enable it by yourself
-        settings.domStorageEnabled = true
-        settings.setSupportMultipleWindows(true)
-        settings.loadWithOverviewMode = true
-        settings.setGeolocationEnabled(true)
-        settings.allowFileAccess = true
-        settings.javaScriptCanOpenWindowsAutomatically = true
-        settings.setSupportMultipleWindows(true)
-        //webview setting
-        webView.fitsSystemWindows = true
     }
 
     private fun setQueryListener() {
@@ -692,33 +662,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 @SuppressLint("SetJavaScriptEnabled")
 private fun WebView.setFloatWebView() {
-    // Get the web view settings instance
     val settingsFloat = float_webView.settings
-    //5.0以上开启混合模式加载
     settingsFloat.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
     settingsFloat.javaScriptEnabled = true
-    // Enable and setup web view cache
     settingsFloat.setAppCacheEnabled(true)
     settingsFloat.cacheMode = WebSettings.LOAD_DEFAULT
     settingsFloat.setSupportZoom(false)
-    // Enable zooming in web view
     settingsFloat.builtInZoomControls = false
     settingsFloat.displayZoomControls = false
-    // Enable disable images in web view
     settingsFloat.blockNetworkImage = false
-    // Whether the WebView should load image resources
     settingsFloat.loadsImagesAutomatically = true
-    //设置UA
     settingsFloat.userAgentString =
         settingsFloat.userAgentString + " mooncellApp/" + BuildConfig.VERSION_NAME
-    // More web view settings
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         settingsFloat.safeBrowsingEnabled = true
     }
     settingsFloat.useWideViewPort = true
     settingsFloat.loadWithOverviewMode = true
     settingsFloat.javaScriptCanOpenWindowsAutomatically = true
-    // More optional settings, you can enable it by yourself
     settingsFloat.domStorageEnabled = true
     settingsFloat.setSupportMultipleWindows(true)
     settingsFloat.loadWithOverviewMode = true
@@ -726,16 +687,13 @@ private fun WebView.setFloatWebView() {
     settingsFloat.allowFileAccess = true
     settingsFloat.javaScriptCanOpenWindowsAutomatically = true
     settingsFloat.setSupportMultipleWindows(true)
-    //webview setting
     float_webView.fitsSystemWindows = true
 
     float_webView.webViewClient = object : WebViewClient() {
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (Uri.parse(url).host == "fgo.wiki") {
-                // This is my web site, so do not override; let my WebView load the page
                 return false
             }
-            // Otherwise, the link is not for a page on my site, so launch another Activity that handles URLs
             Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
                 Log.e("debug", "overwriteURL")
             }
