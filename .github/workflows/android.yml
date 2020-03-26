@@ -1,21 +1,47 @@
-name: Android CI
+name: BUILD & RELEASE
 
 on:
   push:
     branches: [ master ]
+    paths: 
+      - app/**
   pull_request:
     branches: [ master ]
-
+    paths: 
+      - app/**
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: write google-servie.json
+      run:  echo '${{ secrets.GOOGLE_SERVICE }}' >> app/google-services.json
+    - name: get mipush sdk
+      run: 'mkdir app/libs && wget https://api.github.com/repos${{ secrets.FILE_PATH }}  --header "Authorization: token ${{ secrets.TOKEN }}" --header "Accept: application/vnd.github.v3.raw" -O app/libs/MiPush_SDK_Client_3_7_5.jar'
     - name: Build with Gradle
       run: ./gradlew build -PMI_PUSH_APP_ID=${{ secrets.MI_PUSH_APP_ID }} -PMI_PUSH_APP_KEY=${{ secrets.MI_PUSH_APP_KEY }}
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.run_id }}
+        release_name: auto build 
+        body: debug version of ${{ github.sha }}
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: app/build/outputs/apk/debug/app-debug.apk
+        asset_name: mooncell-client-debug.apk
+        asset_content_type: application/vnd.android.package-archive 
