@@ -39,16 +39,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" >
 
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/m_search_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    app:iconifiedByDefault="false"
-                    app:actionViewClass="android.support.v7.widget.SearchView"
-                    app:queryHint="搜索Mooncell">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <androidx.appcompat.widget.SearchView
+                        android:id="@+id/m_search_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentEnd="true"
+                        app:iconifiedByDefault="true"
+                        app:actionViewClass="android.support.v7.widget.SearchView"
+                        app:queryHint="搜索Mooncell">
+                    </androidx.appcompat.widget.SearchView>
+                </RelativeLayout>
 
-                </androidx.appcompat.widget.SearchView>
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
 

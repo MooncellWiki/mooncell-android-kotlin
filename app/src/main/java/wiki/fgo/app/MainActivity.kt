@@ -64,6 +64,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     var loggedUserId: String? = null
 
+    var isFloatBallCreated: Boolean? = false
+
     private var cssLayer: String =
         "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
 
@@ -76,7 +78,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_float -> {
             if (PermissionUtils.checkPermission(this)) {
-                createFloatBall()
+                if (isFloatBallCreated == false) {
+                    createFloatBall()
+                    isFloatBallCreated = true
+                }
                 FloatWindow.get().hide()
                 EasyFloat.with(this)
                     .setLayout(R.layout.float_window, OnInvokeView {
@@ -85,7 +90,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         it.findViewById<WebView>(R.id.float_webView).loadUrl(url)
                         it.findViewById<ImageView>(R.id.ivClose).setOnClickListener {
                             EasyFloat.dismissAppFloat()
-                            FloatWindow.destroy()
+                            if (isFloatBallCreated == true) {
+                                FloatWindow.get().show()
+                                FloatWindow.destroy()
+                                isFloatBallCreated = false
+                            }
                         }
                         it.findViewById<CheckBox>(R.id.checkbox)
                             .setOnCheckedChangeListener { _, isChecked ->
@@ -208,7 +217,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(Gravity.LEFT)) {
             drawer_layout.closeDrawer(Gravity.LEFT)
-        } else {
+        }
+        if (!m_search_view.isIconified) {
+            m_search_view.isIconified = true;
+        }
+        else {
             super.onBackPressed()
         }
     }
@@ -298,7 +311,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 swipeLayout.setProgressViewEndTarget(false, 250)
                 swipeLayout.isRefreshing = true
-//                Toast.makeText(this@MainActivity, webView.settings.userAgentString.toString(), Toast.LENGTH_SHORT).show()
                 super.onPageStarted(view, url, favicon)
                 webView.loadUrl(cssLayer)
                 swipeLayout.isRefreshing = false
@@ -416,10 +428,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun setQueryListener() {
         m_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-//                Toast.makeText(applicationContext, query.toString(), Toast.LENGTH_SHORT).show()
                 val searchUrl = searchBaseUrl + query.toString()
                 webView.loadUrl(searchUrl)
-                // Clear the text in search bar but (don't trigger a new search!)
                 m_search_view.setQuery("", false)
                 return true
             }
