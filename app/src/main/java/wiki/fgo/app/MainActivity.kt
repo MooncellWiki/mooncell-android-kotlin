@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.net.Uri.decode
 import android.os.Build
@@ -136,6 +137,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         R.id.action_notice -> {
             webView.loadUrl("https://fgo.wiki/w/特殊:通知")
+            true
+        }
+
+        R.id.action_settings -> {
+            webView.loadUrl("https://fgo.wiki/w/特殊:参数设置")
             true
         }
 
@@ -677,6 +683,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun createFloatBall() {
         val floatBall = ImageView(applicationContext)
         floatBall.setImageResource(R.mipmap.ic_launcher)
+
         FloatWindow
             .with(applicationContext)
             .setView(floatBall)
