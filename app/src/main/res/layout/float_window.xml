@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rlContent"
-    android:layout_width="250dp"
-    android:layout_height="250dp"
+    android:layout_width="280dp"
+    android:layout_height="280dp"
     android:background="@color/cardview_dark_background"
     android:orientation="vertical">
 

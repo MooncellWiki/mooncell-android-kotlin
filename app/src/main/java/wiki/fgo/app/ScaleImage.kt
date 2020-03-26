@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.ImageView
 
-class ScaleImage(context: Context, attrs: AttributeSet? = null) : ImageView(context, attrs) {
+class ScaleImage(context: Context, attrs: AttributeSet? = null) : androidx.appcompat.widget.AppCompatImageView(context, attrs) {
 
     private var touchDownX = 0f
     private var touchDownY = 0f
