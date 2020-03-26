@@ -14,10 +14,7 @@ import android.os.Message
 import android.util.Log
 import android.view.*
 import android.webkit.*
-import android.widget.CheckBox
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.RelativeLayout
+import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -40,6 +37,8 @@ import com.lzf.easyfloat.enums.ShowPattern
 import com.lzf.easyfloat.interfaces.OnInvokeView
 import com.lzf.easyfloat.interfaces.OnPermissionResult
 import com.lzf.easyfloat.permission.PermissionUtils
+import com.yhao.floatwindow.FloatWindow
+import com.yhao.floatwindow.Screen
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.float_window.view.*
 import kotlinx.android.synthetic.main.nav_header.*
@@ -65,6 +64,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     var loggedUserId: String? = null
 
+    var isFloatBallCreated: Boolean? = false
+
     private var cssLayer: String =
         "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
 
@@ -77,19 +78,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_float -> {
             if (PermissionUtils.checkPermission(this)) {
+                if (isFloatBallCreated == false) {
+                    createFloatBall()
+                    isFloatBallCreated = true
+                }
+                FloatWindow.get().hide()
                 EasyFloat.with(this)
                     .setLayout(R.layout.float_window, OnInvokeView {
                         it.findViewById<WebView>(R.id.float_webView).setFloatWebView()
-                        val url =
-                            "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
+                        val url = webView.url
                         it.findViewById<WebView>(R.id.float_webView).loadUrl(url)
                         it.findViewById<ImageView>(R.id.ivClose).setOnClickListener {
                             EasyFloat.dismissAppFloat()
+                            if (isFloatBallCreated == true) {
+                                FloatWindow.get().show()
+                                FloatWindow.destroy()
+                                isFloatBallCreated = false
+                            }
                         }
                         it.findViewById<CheckBox>(R.id.checkbox)
                             .setOnCheckedChangeListener { _, isChecked ->
                                 EasyFloat.appFloatDragEnable(isChecked)
                             }
+                        it.findViewById<ImageView>(R.id.ivFloatBallCheck).setOnClickListener {
+                            EasyFloat.hideAppFloat()
+                            FloatWindow.get().show()
+                        }
                         val content = it.findViewById<RelativeLayout>(R.id.rlContent)
                         val params = content.layoutParams as FrameLayout.LayoutParams
                         it.findViewById<ScaleImage>(R.id.ivScale).onScaledListener =
@@ -203,7 +217,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(Gravity.LEFT)) {
             drawer_layout.closeDrawer(Gravity.LEFT)
-        } else {
+        }
+        if (!m_search_view.isIconified) {
+            m_search_view.isIconified = true;
+        }
+        else {
             super.onBackPressed()
         }
     }
@@ -286,7 +304,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun loadWebView() {
         val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
-        // Set web view client
         setWebView()
         webView.loadUrl(mainUrl)
         WebView.setWebContentsDebuggingEnabled(true)
@@ -294,7 +311,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 swipeLayout.setProgressViewEndTarget(false, 250)
                 swipeLayout.isRefreshing = true
-//                Toast.makeText(this@MainActivity, webView.settings.userAgentString.toString(), Toast.LENGTH_SHORT).show()
                 super.onPageStarted(view, url, favicon)
                 webView.loadUrl(cssLayer)
                 swipeLayout.isRefreshing = false
@@ -412,10 +428,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun setQueryListener() {
         m_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-//                Toast.makeText(applicationContext, query.toString(), Toast.LENGTH_SHORT).show()
                 val searchUrl = searchBaseUrl + query.toString()
                 webView.loadUrl(searchUrl)
-                // Clear the text in search bar but (don't trigger a new search!)
                 m_search_view.setQuery("", false)
                 return true
             }
@@ -494,7 +508,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         webView.loadUrl(urlConcat(item.title.toString()))
     }
 
-    private fun showResponse(stringList: List<String>) {
+    private fun showSidebarResponse(stringList: List<String>) {
         runOnUiThread {
             val menu: Menu = nav_view.menu
             val subMenu: SubMenu = menu.addSubMenu(1, 1, 0, "当前活动")
@@ -519,7 +533,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             val resultArray = result?.replace("<br />\\n", "")?.split("<br />")
             if (resultArray != null) {
-                return showResponse(resultArray)
+                return showSidebarResponse(resultArray)
             }
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -658,6 +672,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
         val logDefaultValue = resources.getString(R.string.local_log_userId_default)
         loggedUserId = sharedPref.getString(getString(R.string.local_log_userId), logDefaultValue)
+    }
+
+    private fun createFloatBall() {
+        val floatBall = ImageView(applicationContext)
+        floatBall.setImageResource(R.mipmap.ic_launcher)
+        FloatWindow
+            .with(applicationContext)
+            .setView(floatBall)
+            .setWidth(150)
+            .setHeight(Screen.width, 0.2f)
+            .setX(300)
+            .setY(Screen.height, 0.3f)
+            .setDesktopShow(true)
+            .build()
+
+        floatBall.setOnClickListener {
+            EasyFloat.showAppFloat()
+            FloatWindow.get().hide()
+        }
     }
 }
 

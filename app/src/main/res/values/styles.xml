@@ -29,6 +29,10 @@
         <item name="colorControlActivated">@color/white</item>
     </style>
 
+    <style name="SidebarTextAppearance">
+        <item name="android:ellipsize">end</item>
+    </style>
+
 <!--    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">-->
 <!--        <item name="colorAccent">@android:color/white</item>-->
 <!--        <item name="android:textColorPrimary">@android:color/white</item>-->

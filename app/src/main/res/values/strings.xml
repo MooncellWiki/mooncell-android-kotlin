@@ -40,4 +40,5 @@
     <string name="action_exit">退出</string>
     <string name="main_page">首页</string>
     <string name="float_checkbox_state">是否可拖拽</string>
+    <string name="action_settings">设置</string>
 </resources>
