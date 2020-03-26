@@ -1,6 +1,6 @@
 [![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)  
 [![Language](https://img.shields.io/badge/language-kotlin-orange.svg)](https://kotlinlang.org/)
-![BUILD](https://github.com/daflyinbed/Mooncell-Client-Kotlin/workflows/BUILD/badge.svg)
+![BUILD](https://github.com/StarHeartHunt/Mooncell-Client-Kotlin/workflows/BUILD/badge.svg)
 # Mooncell-Client-Kotlin
 this repo contains the source code for the official [fgo.wiki android client](https://fgo.wiki/w/Mooncell:Appclient)
 ## build
