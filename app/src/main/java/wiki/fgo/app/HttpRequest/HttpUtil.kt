@@ -8,7 +8,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-class HTTPUtil {
+class HttpUtil {
     companion object {
         fun sendHttpRequest(address: String, callback: HttpCallback?) {
             Thread(Runnable {

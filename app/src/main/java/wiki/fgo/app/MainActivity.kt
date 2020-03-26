@@ -49,7 +49,7 @@ import kotlinx.android.synthetic.main.nav_header.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
-import wiki.fgo.app.HttpRequest.HTTPUtil
+import wiki.fgo.app.HttpRequest.HttpUtil
 import wiki.fgo.app.McWebview.WebviewSettings
 import java.io.BufferedOutputStream
 import java.io.FileOutputStream
@@ -219,8 +219,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         if (!m_search_view.isIconified) {
             m_search_view.isIconified = true;
-        }
-        else {
+        } else {
             super.onBackPressed()
         }
     }
@@ -310,7 +309,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun loadWebView() {
         val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
         val cacheDirPath = cacheDir.path
-        WebviewSettings.setWebView(webView,cacheDirPath)
+        WebviewSettings.setWebView(webView, cacheDirPath)
         webView.loadUrl(mainUrl)
         WebView.setWebContentsDebuggingEnabled(true)
         webView.webViewClient = object : WebViewClient() {
@@ -535,7 +534,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun sendRequestWithOkHttp(url: String, type: Int) {
         Thread(Runnable {
             try {
-                HTTPUtil.sendOkHttpRequest(
+                HttpUtil.sendOkHttpRequest(
                     url,
                     object : Callback {
 
