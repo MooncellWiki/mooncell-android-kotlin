@@ -7,4 +7,4 @@ this repo contains the source code for the official [fgo.wiki android client](ht
 1. move your MiPush_SDK_Client_3_7_5.jar to /app/libs
 2. move your google-services.json to app/
 3. In your android studio, File>Settings>BUILD,Execution,Deployment>Compiler>Command-line Options, fill the blank with:
-<pre><code>-PMI_PUSH_APP_ID=<yourMiPushAppId> -PMI_PUSH_APP_KEY=<yourMiPushAppKey></pre></code>
+<pre><code>-PMI_PUSH_APP_ID=yourMiPushAppId -PMI_PUSH_APP_KEY=yourMiPushAppKey</pre></code>
