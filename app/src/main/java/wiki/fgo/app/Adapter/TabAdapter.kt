@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import wiki.fgo.app.WebView.WebviewInit
 import wiki.fgo.app.R
-import wiki.fgo.app.ViewModel.ItemTabViewModel
+import wiki.fgo.app.ViewModel.WebViewViewModel
 
-class TabAdapter(private val context: Context, private val viewModel: ItemTabViewModel) :
+class TabAdapter(private val context: Context, private val viewModel: WebViewViewModel) :
     RecyclerView.Adapter<TabAdapter.TabViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): TabViewHolder {

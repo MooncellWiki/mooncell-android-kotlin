@@ -18,7 +18,6 @@ import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -57,7 +56,7 @@ import wiki.fgo.app.Adapter.TabAdapter
 import wiki.fgo.app.HttpRequest.HttpUtil
 import wiki.fgo.app.HttpRequest.HttpUtil.Companion.avatarUrlConcat
 import wiki.fgo.app.HttpRequest.HttpUtil.Companion.urlConcat
-import wiki.fgo.app.ViewModel.ItemTabViewModel
+import wiki.fgo.app.ViewModel.WebViewViewModel
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -65,8 +64,6 @@ import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var isHorizontal: Boolean = true
-
-    private val viewModel: ItemTabViewModel by viewModels()
 
     private val sidebarFetchUrl =
         "https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1"
@@ -272,7 +269,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
         pager = findViewById<ViewPager2>(R.id.vp_content)
-        pager.adapter = TabAdapter(this, viewModel).apply { setHasStableIds(true) }
+        pager.adapter = TabAdapter(this, WebViewViewModel).apply { setHasStableIds(true) }
 
         TabLayoutMediator(tab_layout, pager) { tab, position ->
             tab.text = "tab $position"
@@ -363,7 +360,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onQueryTextSubmit(query: String?): Boolean {
                 val searchUrl = searchBaseUrl + query.toString()
 //                webView.loadUrl(searchUrl)
-                viewModel.items[pager.currentItem].Url=searchUrl
+                WebViewViewModel.items[pager.currentItem].Url = searchUrl
                 pager.adapter?.notifyDataSetChanged()
                 m_search_view.setQuery("", false)
                 return true
@@ -422,10 +419,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun closeDrawerAfterClick(item: MenuItem, custom: String? = null) {
         if (custom != null) {
             drawer_layout.closeDrawer(Gravity.LEFT)
-            webView.loadUrl(urlConcat(custom))
+            WebViewViewModel.items[pager.currentItem].Url = urlConcat(custom)
+            pager.adapter?.notifyDataSetChanged()
         } else {
             drawer_layout.closeDrawer(Gravity.LEFT)
-            webView.loadUrl(urlConcat(item.title.toString()))
+            WebViewViewModel.items[pager.currentItem].Url = urlConcat(item.title.toString())
+            pager.adapter?.notifyDataSetChanged()
         }
     }
 
