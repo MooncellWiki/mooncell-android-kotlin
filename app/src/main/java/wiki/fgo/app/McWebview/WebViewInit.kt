@@ -6,7 +6,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import wiki.fgo.app.BuildConfig
 
-class WebviewSettings {
+class WebviewInit {
     companion object {
         @SuppressLint("SetJavaScriptEnabled")
         fun setWebView(webView: WebView, cacheDirPath: String) {

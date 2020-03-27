@@ -18,6 +18,7 @@ import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -27,13 +28,14 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.github.salomonbrys.kotson.fromJson
 import com.github.salomonbrys.kotson.get
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.lzf.easyfloat.EasyFloat
@@ -44,13 +46,19 @@ import com.lzf.easyfloat.permission.PermissionUtils
 import com.yhao.floatwindow.FloatWindow
 import com.yhao.floatwindow.Screen
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.float_window.view.*
 import kotlinx.android.synthetic.main.nav_header.*
+import kotlinx.android.synthetic.main.webview.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
+import wiki.fgo.app.Adapter.TabAdapter
 import wiki.fgo.app.HttpRequest.HttpUtil
-import wiki.fgo.app.McWebview.WebviewSettings
+import wiki.fgo.app.HttpRequest.HttpUtil.Companion.avatarUrlConcat
+import wiki.fgo.app.HttpRequest.HttpUtil.Companion.urlConcat
+import wiki.fgo.app.McWebview.WebviewInit
+import wiki.fgo.app.ViewModel.ItemTabViewModel
 import java.io.BufferedOutputStream
 import java.io.FileOutputStream
 import java.io.IOException
@@ -61,6 +69,15 @@ import java.util.regex.Pattern
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private var isHorizontal : Boolean = true
+
+    private val viewModel : ItemTabViewModel by viewModels()
+
+    private val sidebarFetchUrl =
+        "https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1"
+
+    private val checkUpdateUrl =
+        "https://fgo.wiki/images/wiki/merlin/client/update.json"
 
     var cookieMap = mutableMapOf<String, String>()
 
@@ -259,21 +276,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         checkPermissions()
         setSupportActionBar(findViewById(R.id.my_toolbar))
-        val mTabLayout: TabLayout = findViewById(R.id.tab_layout)
-        // 添加 tab item
-        mTabLayout.addTab(mTabLayout.newTab().setText("TAB1"))
-        mTabLayout.addTab(mTabLayout.newTab().setText("TAB2"))
-        mTabLayout.addTab(mTabLayout.newTab().setText("TAB3"))
-        mTabLayout.addTab(mTabLayout.newTab().setText("TAB4"))
+
+        val pager = findViewById<ViewPager2>(R.id.vp_content)
+        pager.adapter = TabAdapter(this, viewModel).apply { setHasStableIds(true) }
+
+        TabLayoutMediator(tab_layout, pager) { tab, position ->
+            tab.text = viewModel.items[position]
+        }.attach()
+
         readLogUserPreference()
         initDrawer()
         setDrawer()
         swipeLayout.setColorSchemeResources(R.color.colorPrimary)
-        val sidebarFetchUrl =
-            "https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1"
         sendRequestWithOkHttp(sidebarFetchUrl, 1)
-        val checkUpdateUrl =
-            "https://fgo.wiki/images/wiki/merlin/client/update.json"
         sendRequestWithOkHttp(checkUpdateUrl, 2)
         setQueryListener()
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -309,7 +324,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun loadWebView() {
         val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
         val cacheDirPath = cacheDir.path
-        WebviewSettings.setWebView(webView, cacheDirPath)
+        WebviewInit.setWebView(webView, cacheDirPath)
         webView.loadUrl(mainUrl)
         WebView.setWebContentsDebuggingEnabled(true)
         webView.webViewClient = object : WebViewClient() {
@@ -445,14 +460,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-    }
-
-    private fun urlConcat(title: String): String {
-        return "https://fgo.wiki/w/$title"
-    }
-
-    private fun avatarUrlConcat(userId: String): String {
-        return "http://avatar.mooncell.wiki/mc/$userId/original.png"
     }
 
     @SuppressLint("RtlHardcoded")
@@ -604,24 +611,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.e("debug", isOpen.toString())
             }
         })
-    }
-
-    private fun requestAvatarFromServer() {
-        val avatarUrl = loggedUserId?.let { avatarUrlConcat(it) }
-        var conn: HttpURLConnection? = null
-        try {
-            conn = URL(avatarUrl).openConnection() as HttpURLConnection
-            conn.connect()
-            conn.inputStream.use { input ->
-                BufferedOutputStream(FileOutputStream("./download.png")).use { output ->
-                    input.copyTo(output)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            conn?.disconnect()
-        }
     }
 
     private fun writeLogUserPreference() {
