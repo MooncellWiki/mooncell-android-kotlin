@@ -59,11 +59,7 @@ import wiki.fgo.app.HttpRequest.HttpUtil.Companion.avatarUrlConcat
 import wiki.fgo.app.HttpRequest.HttpUtil.Companion.urlConcat
 import wiki.fgo.app.McWebview.WebviewInit
 import wiki.fgo.app.ViewModel.ItemTabViewModel
-import java.io.BufferedOutputStream
-import java.io.FileOutputStream
 import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
