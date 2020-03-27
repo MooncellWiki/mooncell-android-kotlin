@@ -44,8 +44,10 @@ import com.lzf.easyfloat.permission.PermissionUtils
 import com.yhao.floatwindow.FloatWindow
 import com.yhao.floatwindow.Screen
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar.*
 import kotlinx.android.synthetic.main.float_window.view.*
 import kotlinx.android.synthetic.main.nav_header.*
+import kotlinx.android.synthetic.main.webview.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
