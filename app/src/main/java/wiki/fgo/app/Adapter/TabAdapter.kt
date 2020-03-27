@@ -6,7 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import androidx.recyclerview.widget.RecyclerView
-import wiki.fgo.app.McWebview.WebviewInit
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import wiki.fgo.app.WebView.WebviewInit
 import wiki.fgo.app.R
 import wiki.fgo.app.ViewModel.ItemTabViewModel
 
@@ -19,7 +20,11 @@ class TabAdapter(private val context: Context, private val viewModel: ItemTabVie
             parent, false
         )
         val webView = v.findViewById<WebView>(R.id.webView)
-        WebviewInit.setWebView(webView, parent.context.cacheDir.path)
+        WebviewInit.setWebView(
+            webView,
+            v as SwipeRefreshLayout,
+            parent.context
+        )
         webView.loadUrl("https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile")
         return TabViewHolder(v)
     }

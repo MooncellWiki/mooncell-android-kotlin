@@ -57,7 +57,6 @@ import wiki.fgo.app.Adapter.TabAdapter
 import wiki.fgo.app.HttpRequest.HttpUtil
 import wiki.fgo.app.HttpRequest.HttpUtil.Companion.avatarUrlConcat
 import wiki.fgo.app.HttpRequest.HttpUtil.Companion.urlConcat
-import wiki.fgo.app.McWebview.WebviewInit
 import wiki.fgo.app.ViewModel.ItemTabViewModel
 import java.io.IOException
 import java.util.regex.Matcher
@@ -82,9 +81,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var loggedUserId: String? = null
 
     var isFloatBallCreated: Boolean? = false
-
-    private var cssLayer: String =
-        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
 
     private var searchBaseUrl: String = "https://fgo.wiki/index.php?search="
 
@@ -322,29 +318,43 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun loadWebView() {
         val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
         val cacheDirPath = cacheDir.path
-        WebviewInit.setWebView(webView, cacheDirPath)
+//        WebviewInit.setWebView(webView, cacheDirPath)
         webView.loadUrl(mainUrl)
-
-
-        swipeLayout.setOnRefreshListener {
-            webView.reload()
-            webView.loadUrl(cssLayer)
-        }
-
-        webView.webChromeClient = object : WebChromeClient() {
-            override fun onCreateWindow(
-                view: WebView,
-                dialog: Boolean,
-                userGesture: Boolean,
-                resultMsg: Message?
-            ): Boolean {
-                val result: WebView.HitTestResult = view.hitTestResult
-                val data: String? = result.extra
-                val context = view.context
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data))
-                context.startActivity(browserIntent)
-                return false
+        WebView.setWebContentsDebuggingEnabled(true)
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+//                webView.loadUrl(cssLayer)
+                try {
+                    val cookieManager: CookieManager = CookieManager.getInstance()
+                    if (cookieManager.getCookie(url) == null) {
+                        println("cookie is null")
+                    } else {
+                        val cookieStr: String = cookieManager.getCookie(url)
+                        val temp: List<String> = cookieStr.split(";")
+                        for (ar1 in temp) {
+                            val temp1 = ar1.split("=").toTypedArray()
+                            cookieMap[temp1[0].replace(" ", "")] = temp1[1]
+                        }
+                        userName = cookieMap["my_wiki_fateUserName"]
+                        loggedUserId = cookieMap["my_wiki_fateUserID"]
+                        if (userName != null) {
+                            try {
+                                nav_header_title.text = decode(userName).toString()
+                                writeLogUserPreference()
+                            } catch (e: IllegalStateException) {
+                                nav_header_title.text = decode("岸波白野").toString()
+                                e.printStackTrace()
+                            }
+                        }
+                        invalidateOptionsMenu()
+                    }
+                } catch (e: IllegalStateException) {
+                    println("处理 IllegalStateException")
+                    e.printStackTrace()
+                }
+                super.onPageFinished(view, url)
             }
+
         }
     }
 
