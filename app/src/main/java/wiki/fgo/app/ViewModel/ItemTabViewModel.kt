@@ -3,17 +3,12 @@ package wiki.fgo.app.ViewModel
 import androidx.lifecycle.ViewModel
 
 class ItemTabViewModel : ViewModel() {
-
-    private var initValue = 1L
-    val items = (1..4).map { longToItem(initValue++) }.toMutableList()
-
-    fun getItemById(id: Long): String = items.first { itemToLong(it) == id }
-    fun itemId(position: Int): Long = itemToLong(items[position])
-    fun contains(itemId: Long): Boolean = items.any { itemToLong(it) == itemId }
-    fun addNewItem(position: Int) = items.add(position, longToItem(initValue++))
-    fun removeItem(position: Int) = items.removeAt(position)
+    private val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
+    private var initValue: Short = 0
+    var items = (1..4).map { Bean(initValue++, mainUrl) }.toMutableList()
+    fun getUrlById(id: Short): String = items[id.toInt()].Url
+    fun itemId(position: Int): Long = items[position].id.toLong()
     val size: Int get() = items.size
-
-    private fun longToItem(item: Long): String = "Tab $item"
-    private fun itemToLong(item: String): Long = item.split(" ")[1].toLong()
+    inner class Bean(var id: Short, var Url: String) {
+    }
 }

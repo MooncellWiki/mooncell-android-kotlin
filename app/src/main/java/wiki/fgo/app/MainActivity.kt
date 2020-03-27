@@ -65,9 +65,9 @@ import java.util.regex.Pattern
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private var isHorizontal : Boolean = true
+    private var isHorizontal: Boolean = true
 
-    private val viewModel : ItemTabViewModel by viewModels()
+    private val viewModel: ItemTabViewModel by viewModels()
 
     private val sidebarFetchUrl =
         "https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1"
@@ -91,6 +91,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private val MY_PERMISSIONS_MIPUSH_GROUP = 1
+
+    private lateinit var pager: ViewPager2
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_float -> {
@@ -273,11 +275,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         checkPermissions()
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
-        val pager = findViewById<ViewPager2>(R.id.vp_content)
+        pager = findViewById<ViewPager2>(R.id.vp_content)
         pager.adapter = TabAdapter(this, viewModel).apply { setHasStableIds(true) }
 
         TabLayoutMediator(tab_layout, pager) { tab, position ->
-            tab.text = viewModel.items[position]
+            tab.text = "tab $position"
         }.attach()
 
         readLogUserPreference()
@@ -288,7 +290,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         sendRequestWithOkHttp(checkUpdateUrl, 2)
         setQueryListener()
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        loadWebView()
+//        loadWebView()
     }
 
     override fun onResume() {
@@ -322,61 +324,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val cacheDirPath = cacheDir.path
         WebviewInit.setWebView(webView, cacheDirPath)
         webView.loadUrl(mainUrl)
-        WebView.setWebContentsDebuggingEnabled(true)
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                swipeLayout.setProgressViewEndTarget(false, 250)
-                swipeLayout.isRefreshing = true
-                super.onPageStarted(view, url, favicon)
-                webView.loadUrl(cssLayer)
-                swipeLayout.isRefreshing = false
-            }
 
-            override fun onPageFinished(view: WebView?, url: String?) {
-                webView.loadUrl(cssLayer)
-                try {
-                    val cookieManager: CookieManager = CookieManager.getInstance()
-                    if (cookieManager.getCookie(url) == null) {
-                        println("cookie is null")
-                    } else {
-                        val cookieStr: String = cookieManager.getCookie(url)
-                        val temp: List<String> = cookieStr.split(";")
-                        for (ar1 in temp) {
-                            val temp1 = ar1.split("=").toTypedArray()
-                            cookieMap[temp1[0].replace(" ", "")] = temp1[1]
-                        }
-                        userName = cookieMap["my_wiki_fateUserName"]
-                        loggedUserId = cookieMap["my_wiki_fateUserID"]
-                        if (userName != null) {
-                            try {
-                                nav_header_title.text = decode(userName).toString()
-                                writeLogUserPreference()
-                            } catch (e: IllegalStateException) {
-                                nav_header_title.text = decode("岸波白野").toString()
-                                e.printStackTrace()
-                            }
-                        }
-                        invalidateOptionsMenu()
-                    }
-                } catch (e: IllegalStateException) {
-                    println("处理 IllegalStateException")
-                    e.printStackTrace()
-                }
-                super.onPageFinished(view, url)
-            }
-
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                if (Uri.parse(url).host == "fgo.wiki") {
-                    // This is my web site, so do not override; let my WebView load the page
-                    return false
-                }
-                // Otherwise, the link is not for a page on my site, so launch another Activity that handles URLs
-                Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                    startActivity(this)
-                }
-                return true
-            }
-        }
 
         swipeLayout.setOnRefreshListener {
             webView.reload()
@@ -404,7 +352,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         m_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 val searchUrl = searchBaseUrl + query.toString()
-                webView.loadUrl(searchUrl)
+//                webView.loadUrl(searchUrl)
+                viewModel.items[pager.currentItem].Url=searchUrl
+                pager.adapter?.notifyDataSetChanged()
                 m_search_view.setQuery("", false)
                 return true
             }
