@@ -29,7 +29,11 @@
         <activity android:name=".MainActivity">
 
         </activity>
+        <activity
+            android:name=".TabLayoutActivity"
+            android:theme="@style/AppTheme">
 
+        </activity>
         <activity
             android:name=".StartActivity"
             android:icon="@mipmap/ic_launcher_round">

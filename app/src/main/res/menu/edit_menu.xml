@@ -20,6 +20,10 @@
         android:title="@string/action_login"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/action_diff"
+        android:title="@string/action_diff"
+        app:showAsAction="never"/>
+
     <item android:id="@+id/action_float"
         android:title="@string/action_float"
         app:showAsAction="never"/>
