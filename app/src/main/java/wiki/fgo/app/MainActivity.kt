@@ -53,12 +53,10 @@ import kotlinx.android.synthetic.main.webview.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
-import wiki.fgo.app.Adapter.TabAdapter
 import wiki.fgo.app.HttpRequest.HttpUtil
 import wiki.fgo.app.HttpRequest.HttpUtil.Companion.avatarUrlConcat
 import wiki.fgo.app.HttpRequest.HttpUtil.Companion.urlConcat
 import wiki.fgo.app.McWebview.WebviewInit
-import wiki.fgo.app.ViewModel.ItemTabViewModel
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -66,8 +64,6 @@ import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var isHorizontal : Boolean = true
-
-    private val viewModel : ItemTabViewModel by viewModels()
 
     private val sidebarFetchUrl =
         "https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1"
@@ -272,14 +268,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         checkPermissions()
         setSupportActionBar(findViewById(R.id.my_toolbar))
-
-        val pager = findViewById<ViewPager2>(R.id.vp_content)
-        pager.adapter = TabAdapter(this, viewModel).apply { setHasStableIds(true) }
-
-        TabLayoutMediator(tab_layout, pager) { tab, position ->
-            tab.text = viewModel.items[position]
-        }.attach()
-
         readLogUserPreference()
         initDrawer()
         setDrawer()
