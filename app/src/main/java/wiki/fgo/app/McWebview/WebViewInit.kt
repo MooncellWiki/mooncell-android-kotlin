@@ -1,15 +1,20 @@
 package wiki.fgo.app.McWebview
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.webkit.WebSettings
 import android.webkit.WebView
 import wiki.fgo.app.BuildConfig
 
+
 class WebviewInit {
     companion object {
         @SuppressLint("SetJavaScriptEnabled")
-        fun setWebView(webView: WebView, cacheDirPath: String) {
+        fun setWebView(
+            webView: WebView,
+            ctx: Context
+        ) {
             // Get the web view settings instance
             val settings = webView.settings
             //5.0以上开启混合模式加载
@@ -18,7 +23,7 @@ class WebviewInit {
             // Enable and setup web view cache
             settings.setAppCacheEnabled(true)
             settings.cacheMode = WebSettings.LOAD_DEFAULT
-            settings.setAppCachePath(cacheDirPath)
+            settings.setAppCachePath(ctx.cacheDir.path)
             settings.setSupportZoom(false)
             // Enable zooming in web view
             settings.builtInZoomControls = false

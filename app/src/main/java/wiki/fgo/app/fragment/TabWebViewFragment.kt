@@ -14,17 +14,19 @@ import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.view.marginBottom
+import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import wiki.fgo.app.McWebview.WebviewInit
 import wiki.fgo.app.R
-import wiki.fgo.app.WebView.WebviewInit
 import wiki.fgo.app.viewModel.UserViewModel
 
 
 class TabWebViewFragment(position: Int) : Fragment() {
     private val cssLayer: String =
-        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
+        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}.header-container{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
     private val user: UserViewModel by activityViewModels()
     private val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
     lateinit var webView: WebView
@@ -39,7 +41,7 @@ class TabWebViewFragment(position: Int) : Fragment() {
     ): View {
         swipeRefreshLayout =
             inflater.inflate(R.layout.webview, container, false) as SwipeRefreshLayout
-        webView = swipeRefreshLayout.findViewById<WebView>(R.id.webView)
+        webView = swipeRefreshLayout.findViewById(R.id.webView)
         WebviewInit.setWebView(webView, this.context!!)
         return swipeRefreshLayout
     }
