@@ -170,6 +170,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             finish()
             true
         }
+        R.id.action_about_client -> {
+            val intent = Intent()
+            intent.setClass(this, AboutActivity::class.java)
+            startActivity(intent)
+            true
+        }
 
 //TODO
 //        R.id.action_favorite -> {
