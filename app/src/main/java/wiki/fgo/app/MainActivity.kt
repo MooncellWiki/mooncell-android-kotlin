@@ -26,7 +26,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -69,8 +68,6 @@ import java.util.regex.Pattern
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private var isHorizontal: Boolean = true
-
     private val sidebarFetchUrl =
         "https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1"
 
@@ -82,9 +79,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var sharedPref: SharedPreferences
 
     lateinit var headIv: ImageView
-//    var userName: String? = null
-
-//    var loggedUserId: String? = null
 
     var isFloatBallCreated: Boolean? = false
 
@@ -95,6 +89,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val MY_PERMISSIONS_MIPUSH_GROUP = 1
 
     private lateinit var pager: ViewPager2
+
     private fun currWebViewGoto(url: String) {
         supportFragmentManager.fragments.filterIsInstance<TabWebViewFragment>()
             .find { it.POSITION == pager.currentItem }!!.webView.loadUrl(url)
@@ -282,6 +277,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         pager = findViewById(R.id.vp_content)
         pager.adapter = TabAdapter(this)
+        pager.isUserInputEnabled = false
         pager.offscreenPageLimit = 4
         user = ViewModelProvider(this).get(UserViewModel::class.java)
         TabLayoutMediator(tab_layout, pager) { tab, position ->

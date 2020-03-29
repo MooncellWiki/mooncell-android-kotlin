@@ -17,8 +17,8 @@ import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import wiki.fgo.app.McWebview.WebviewInit
 import wiki.fgo.app.R
-import wiki.fgo.app.WebView.WebviewInit
 import wiki.fgo.app.viewModel.UserViewModel
 
 
@@ -39,7 +39,7 @@ class TabWebViewFragment(position: Int) : Fragment() {
     ): View {
         swipeRefreshLayout =
             inflater.inflate(R.layout.webview, container, false) as SwipeRefreshLayout
-        webView = swipeRefreshLayout.findViewById<WebView>(R.id.webView)
+        webView = swipeRefreshLayout.findViewById(R.id.webView)
         WebviewInit.setWebView(webView, this.context!!)
         return swipeRefreshLayout
     }
@@ -49,6 +49,7 @@ class TabWebViewFragment(position: Int) : Fragment() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 swipeRefreshLayout.setProgressViewEndTarget(false, 250)
+                swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
                 swipeRefreshLayout.isRefreshing = true
                 super.onPageStarted(view, url, favicon)
                 webView.loadUrl(cssLayer)
