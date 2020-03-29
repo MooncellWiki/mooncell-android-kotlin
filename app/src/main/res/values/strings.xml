@@ -44,5 +44,6 @@
     <string name="action_settings">设置</string>
     <string name="tab">tab1</string>
     <string name="action_diff">多栏模式</string>
-    <string name="license_info">版权信息</string>
+    <string name="license_info">开源项目鸣谢</string>
+    <string name="about_developer">关于开发者</string>
 </resources>

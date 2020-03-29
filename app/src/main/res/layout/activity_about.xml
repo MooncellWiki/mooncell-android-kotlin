@@ -23,12 +23,12 @@
             app:titleEnabled="false">
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_marginTop="?attr/actionBarSize"
-                android:paddingVertical="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="?attr/actionBarSize"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
+                android:paddingVertical="20dp"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7">
 
@@ -58,7 +58,7 @@
                 android:theme="@style/ActionBarTheme"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:title="@string/action_about_client"/>
+                app:title="@string/action_about_client" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
