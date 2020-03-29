@@ -1,6 +1,8 @@
 package wiki.fgo.app
 
+import android.content.Intent
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -57,6 +59,11 @@ class AboutActivity : AppCompatActivity() {
             holder.name.text = list[position]["name"]
             holder.source.text = list[position]["source"]
             holder.license.text = list[position]["license"]
+            holder.itemView.setOnClickListener {
+                val contentUrl: Uri = Uri.parse(holder.source.text as String?)
+                val intent = Intent(Intent.ACTION_VIEW, contentUrl)
+                startActivity(intent)
+            }
         }
     }
 
