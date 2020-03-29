@@ -30,12 +30,15 @@
         <activity android:name=".AboutActivity">
 
         </activity>
-        <activity android:name=".MainActivity">
-
-        </activity>
         <activity
-            android:name=".TabLayoutActivity"
-            android:theme="@style/AppTheme">
+            android:name=".DiffActivity"
+            android:windowSoftInputMode="adjustPan" >
+          
+        </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan" >
 
         </activity>
         <activity
