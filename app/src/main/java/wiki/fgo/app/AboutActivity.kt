@@ -41,30 +41,6 @@ class AboutActivity : AppCompatActivity() {
         )
     )
 
-    /*
-        fun gotoPage(view: View) {
-            fun GOTO(url: String) {
-                val uri: Uri = Uri.parse(url)
-                val intent = Intent(Intent.ACTION_VIEW, uri)
-                startActivity(intent)
-            }
-            when (view.id) {
-                R.id.glide_license -> {
-                    GOTO("https://raw.githubusercontent.com/bumptech/glide/master/LICENSE")
-                }
-                R.id.glide_source_code -> {
-                    GOTO("https://github.com/bumptech/glide")
-                }
-                R.id.ok_http_license->{
-                    GOTO("https://raw.githubusercontent.com/square/okhttp/master/LICENSE.txt")
-                }
-                R.id.ok_http_source_code->{
-                    GOTO("https://github.com/square/okhttp")
-                }
-            }
-        }
-
-     */
     inner class MyAdapter(private val list: Array<Map<String, String>>) :
         RecyclerView.Adapter<MyViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -74,7 +50,7 @@ class AboutActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return 2
+            return list.size
         }
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
