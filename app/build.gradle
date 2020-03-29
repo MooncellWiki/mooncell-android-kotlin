@@ -27,7 +27,7 @@ android {
         buildConfigField "String", "MI_PUSH_APP_KEY", "\"${MI_PUSH_APP_KEY}\""
     }
     applicationVariants.all { variant ->
-        variant.resValue "string", "versionName", variant.versionName
+        variant.resValue "string", "versionName", "版本号: " + variant.versionName
     }
     buildTypes {
         release {
