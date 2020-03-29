@@ -4,27 +4,31 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
-import android.net.Uri.decode
 import android.os.Build
 import android.os.Bundle
 import android.os.Message
 import android.util.Log
 import android.view.*
-import android.webkit.*
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -56,35 +60,45 @@ import okhttp3.Response
 import wiki.fgo.app.HttpRequest.HttpUtil
 import wiki.fgo.app.HttpRequest.HttpUtil.Companion.avatarUrlConcat
 import wiki.fgo.app.HttpRequest.HttpUtil.Companion.urlConcat
-import wiki.fgo.app.McWebview.WebviewInit
+import wiki.fgo.app.adapter.TabAdapter
+import wiki.fgo.app.fragment.TabWebViewFragment
+import wiki.fgo.app.viewModel.UserViewModel
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private var isHorizontal: Boolean = true
+
     private val sidebarFetchUrl =
         "https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1"
 
     private val checkUpdateUrl =
         "https://fgo.wiki/images/wiki/merlin/client/update.json"
 
-    var cookieMap = mutableMapOf<String, String>()
+    lateinit var user: UserViewModel
 
-    var userName: String? = null
+    lateinit var sharedPref: SharedPreferences
 
-    var loggedUserId: String? = null
+    lateinit var headIv: ImageView
+//    var userName: String? = null
+
+//    var loggedUserId: String? = null
 
     var isFloatBallCreated: Boolean? = false
-
-    private var cssLayer: String =
-        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
 
     private var searchBaseUrl: String = "https://fgo.wiki/index.php?search="
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private val MY_PERMISSIONS_MIPUSH_GROUP = 1
+
+    private lateinit var pager: ViewPager2
+    private fun currWebViewGoto(url: String) {
+        supportFragmentManager.fragments.filterIsInstance<TabWebViewFragment>()
+            .find { it.POSITION == pager.currentItem }!!.webView.loadUrl(url)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_float -> {
@@ -141,28 +155,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         R.id.action_login -> {
-            webView.loadUrl("https://fgo.wiki/w/特殊:用户登录")
-            true
-        }
-
-        R.id.action_diff -> {
-            val intent = Intent(this, TabLayoutActivity::class.java)
-            startActivity(intent)
+            currWebViewGoto("https://fgo.wiki/w/特殊:用户登录")
             true
         }
 
         R.id.action_notice -> {
-            webView.loadUrl("https://fgo.wiki/w/特殊:通知")
+            currWebViewGoto("https://fgo.wiki/w/特殊:通知")
             true
         }
 
         R.id.action_settings -> {
-            webView.loadUrl("https://fgo.wiki/w/特殊:参数设置")
+            currWebViewGoto("https://fgo.wiki/w/特殊:参数设置")
             true
         }
 
         R.id.action_about -> {
-            webView.loadUrl("https://fgo.wiki/w/Mooncell:关于")
+            currWebViewGoto("https://fgo.wiki/w/Mooncell:关于")
             true
         }
 
@@ -197,7 +205,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.edit_menu, menu)
-        if (userName != null && menu != null) {
+        if (user.getUserId().value != "" && menu !== null) {
             menu.findItem(R.id.action_notice).isVisible = true
         }
         return true
@@ -207,7 +215,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
+/*
     @SuppressLint("RtlHardcoded")
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         // Check if the key event was the Back button and if there's history
@@ -222,6 +230,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // system behavior (probably exit the activity)
         return super.onKeyDown(keyCode, event)
     }
+ */
 
     @SuppressLint("RtlHardcoded")
     override fun onBackPressed() {
@@ -270,6 +279,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         checkPermissions()
         setSupportActionBar(findViewById(R.id.my_toolbar))
+
+        pager = findViewById(R.id.vp_content)
+        pager.adapter = TabAdapter(this)
+        pager.offscreenPageLimit = 4
+        user = ViewModelProvider(this).get(UserViewModel::class.java)
+        TabLayoutMediator(tab_layout, pager) { tab, position ->
+            tab.text = "tab $position"
+        }.attach()
+        sharedPref = getPreferences(Context.MODE_PRIVATE)
         readLogUserPreference()
         initDrawer()
         setDrawer()
@@ -278,7 +296,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         sendRequestWithOkHttp(checkUpdateUrl, 2)
         setQueryListener()
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        loadWebView()
+
+        user.getUserName().observe(this, Observer { it ->
+            nav_header_title?.text = it
+            with(sharedPref.edit()) {
+                putString("userName", it)
+                apply()
+            }
+        })
+        user.getUserId().observe(this, Observer { it ->
+            Glide.with(this)
+                .load(avatarUrlConcat(it))
+                .transition(withCrossFade())
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(false)
+                .into(headIv)
+            with(sharedPref.edit()) {
+                putString("userId", it)
+                apply()
+            }
+        })
     }
 
     override fun onResume() {
@@ -307,94 +344,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun loadWebView() {
-        val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
-        val cacheDirPath = cacheDir.path
-        WebviewInit.setWebView(webView, cacheDirPath)
-        webView.loadUrl(mainUrl)
-        WebView.setWebContentsDebuggingEnabled(true)
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                swipeLayout.setProgressViewEndTarget(false, 250)
-                swipeLayout.isRefreshing = true
-                super.onPageStarted(view, url, favicon)
-                webView.loadUrl(cssLayer)
-                swipeLayout.isRefreshing = false
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                webView.loadUrl(cssLayer)
-                try {
-                    val cookieManager: CookieManager = CookieManager.getInstance()
-                    if (cookieManager.getCookie(url) == null) {
-                        println("cookie is null")
-                    } else {
-                        val cookieStr: String = cookieManager.getCookie(url)
-                        val temp: List<String> = cookieStr.split(";")
-                        for (ar1 in temp) {
-                            val temp1 = ar1.split("=").toTypedArray()
-                            cookieMap[temp1[0].replace(" ", "")] = temp1[1]
-                        }
-                        userName = cookieMap["my_wiki_fateUserName"]
-                        loggedUserId = cookieMap["my_wiki_fateUserID"]
-                        if (userName != null) {
-                            try {
-                                nav_header_title.text = decode(userName).toString()
-                                writeLogUserPreference()
-                            } catch (e: IllegalStateException) {
-                                nav_header_title.text = decode("岸波白野").toString()
-                                e.printStackTrace()
-                            }
-                        }
-                        invalidateOptionsMenu()
-                    }
-                } catch (e: IllegalStateException) {
-                    println("处理 IllegalStateException")
-                    e.printStackTrace()
-                }
-                super.onPageFinished(view, url)
-            }
-
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                if (Uri.parse(url).host == "fgo.wiki") {
-                    // This is my web site, so do not override; let my WebView load the page
-                    return false
-                }
-                // Otherwise, the link is not for a page on my site, so launch another Activity that handles URLs
-                Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                    startActivity(this)
-                }
-                return true
-            }
-        }
-
-        swipeLayout.setOnRefreshListener {
-            webView.reload()
-            webView.loadUrl(cssLayer)
-        }
-
-        webView.webChromeClient = object : WebChromeClient() {
-            override fun onCreateWindow(
-                view: WebView,
-                dialog: Boolean,
-                userGesture: Boolean,
-                resultMsg: Message?
-            ): Boolean {
-                val result: WebView.HitTestResult = view.hitTestResult
-                val data: String? = result.extra
-                val context = view.context
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data))
-                context.startActivity(browserIntent)
-                return false
-            }
-        }
-    }
-
     private fun setQueryListener() {
         m_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 val searchUrl = searchBaseUrl + query.toString()
-                webView.loadUrl(searchUrl)
+                currWebViewGoto(searchUrl)
                 m_search_view.setQuery("", false)
                 return true
             }
@@ -407,43 +361,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun initDrawer() {
         val headView: View = nav_view.inflateHeaderView(R.layout.nav_header)
-        val headIv: ImageView = headView.findViewById(R.id.imageView) as ImageView
-        headIv.setOnClickListener {
-            if (loggedUserId !== null) {
-                headIv.minimumHeight = 220
-                headIv.minimumWidth = 220
-                Glide.with(this)
-                    .load(loggedUserId?.let { it1 -> avatarUrlConcat(it1) })
-                    .transition(withCrossFade())
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .into(headIv)
-            }
-        }
-        if (loggedUserId !== null) {
-            headIv.minimumHeight = 180
-            headIv.minimumWidth = 180
-            Glide.with(this)
-                .load(loggedUserId?.let { it1 -> avatarUrlConcat(it1) })
-                .transition(withCrossFade())
-                .into(headIv)
-        } else {
-            Glide.with(this)
-                .load(avatarUrlConcat("1145141919810"))
-                .transition(withCrossFade())
-                .into(headIv)
-        }
+        headIv = headView.findViewById(R.id.imageView) as ImageView
+        headIv.minimumHeight = 220
+        headIv.minimumWidth = 220
     }
 
     private fun setDrawer() {
         nav_view.setNavigationItemSelectedListener(this)
-        val toggle = ActionBarDrawerToggle(
+        val toggle = object : ActionBarDrawerToggle(
             this,
             drawer_layout,
             my_toolbar,
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
-        )
+        ) {
+            override fun onDrawerOpened(drawerView: View) {
+                if (nav_header_title.text != user.getUserName().value) {
+                    nav_header_title.text = user.getUserName().value
+                }
+                super.onDrawerOpened(drawerView)
+            }
+        }
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
     }
@@ -452,17 +390,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun closeDrawerAfterClick(item: MenuItem, custom: String? = null) {
         if (custom != null) {
             drawer_layout.closeDrawer(Gravity.LEFT)
-            webView.loadUrl(urlConcat(custom))
+            currWebViewGoto(custom)
         } else {
             drawer_layout.closeDrawer(Gravity.LEFT)
-            webView.loadUrl(urlConcat(item.title.toString()))
+            currWebViewGoto(urlConcat(item.title.toString()))
         }
     }
 
     @SuppressLint("RtlHardcoded")
     private fun activityClickListener(item: MenuItem) {
         drawer_layout.closeDrawer(Gravity.LEFT)
-        webView.loadUrl(urlConcat(item.title.toString()))
+        currWebViewGoto(urlConcat(item.title.toString()))
     }
 
     private fun showSidebarResponse(stringList: List<String>) {
@@ -513,7 +451,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .setTitle(title.asString)
                         .setMessage(description.asString)
                         .setPositiveButton("去更新") { _, _ ->
-                            webView.loadUrl("https://fgo.wiki/w/Mooncell:Appclient")
+                            currWebViewGoto("https://fgo.wiki/w/Mooncell:Appclient")
                         }
                         .setNegativeButton("取消") { _, _ -> }
                         .show()
@@ -602,15 +540,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun writeLogUserPreference() {
         val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
         with(sharedPref.edit()) {
-            putString(getString(R.string.local_log_userId), loggedUserId)
+            putString(getString(R.string.local_log_userId), user.getUserId().value)
             apply()
         }
     }
 
     private fun readLogUserPreference() {
-        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
-        val logDefaultValue = resources.getString(R.string.local_log_userId_default)
-        loggedUserId = sharedPref.getString(getString(R.string.local_log_userId), logDefaultValue)
+        sharedPref.getString("userId", "")?.let { user.userId(it) }
+        sharedPref.getString("userName", "岸波白野")?.let { user.userName(it) }
     }
 
     private fun createFloatBall() {
