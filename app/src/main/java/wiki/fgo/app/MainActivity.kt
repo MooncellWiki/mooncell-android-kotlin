@@ -232,7 +232,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             drawer_layout.closeDrawer(Gravity.LEFT)
         }
         if (!m_search_view.isIconified) {
-            m_search_view.isIconified = true;
+            m_search_view.isIconified = true
         } else {
             super.onBackPressed()
         }
@@ -519,8 +519,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     MY_PERMISSIONS_MIPUSH_GROUP
                 )
             }
-        } else {
-            // Permission has already been granted
         }
     }
 
