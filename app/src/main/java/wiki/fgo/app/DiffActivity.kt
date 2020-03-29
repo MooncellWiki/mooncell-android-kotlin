@@ -180,7 +180,7 @@ class DiffActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.edit_menu, menu)
+        menuInflater.inflate(R.menu.edit_menu_diff, menu)
         if (user.getUserId().value != "" && menu !== null) {
             menu.findItem(R.id.action_notice).isVisible = true
         }
