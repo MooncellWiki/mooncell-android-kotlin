@@ -26,7 +26,7 @@ import wiki.fgo.app.viewModel.UserViewModel
 
 class TabWebViewFragment(position: Int) : Fragment() {
     private val cssLayer: String =
-        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}.header-container{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
+        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
     private val user: UserViewModel by activityViewModels()
     private val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
     lateinit var webView: WebView
