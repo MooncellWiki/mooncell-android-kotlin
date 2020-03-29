@@ -210,22 +210,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-/*
-    @SuppressLint("RtlHardcoded")
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        // Check if the key event was the Back button and if there's history
-        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack() && !drawer_layout.isDrawerOpen(
-                Gravity.LEFT
-            )
-        ) {
-            webView.goBack()
-            return true
-        }
-        // If it wasn't the Back key or there's no web page history, bubble up to the default
-        // system behavior (probably exit the activity)
-        return super.onKeyDown(keyCode, event)
-    }
- */
+
+//    @SuppressLint("RtlHardcoded")
+//    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+//        // Check if the key event was the Back button and if there's history
+//        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack() && !drawer_layout.isDrawerOpen(
+//                Gravity.LEFT
+//            )
+//        ) {
+//            webView.goBack()
+//            return true
+//        }
+//        // If it wasn't the Back key or there's no web page history, bubble up to the default
+//        // system behavior (probably exit the activity)
+//        return super.onKeyDown(keyCode, event)
+//    }
 
     @SuppressLint("RtlHardcoded")
     override fun onBackPressed() {
@@ -293,14 +292,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setQueryListener()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        user.getUserName().observe(this, Observer { it ->
+        user.getUserName().observe(this, Observer {
             nav_header_title?.text = it
             with(sharedPref.edit()) {
                 putString("userName", it)
                 apply()
             }
         })
-        user.getUserId().observe(this, Observer { it ->
+        user.getUserId().observe(this, Observer {
             Glide.with(this)
                 .load(avatarUrlConcat(it))
                 .transition(withCrossFade())
@@ -531,14 +530,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.e("debug", isOpen.toString())
             }
         })
-    }
-
-    private fun writeLogUserPreference() {
-        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
-        with(sharedPref.edit()) {
-            putString(getString(R.string.local_log_userId), user.getUserId().value)
-            apply()
-        }
     }
 
     private fun readLogUserPreference() {
