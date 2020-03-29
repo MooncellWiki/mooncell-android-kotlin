@@ -14,8 +14,8 @@ import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.core.view.marginBottom
-import androidx.core.view.marginTop
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -51,6 +51,7 @@ class TabWebViewFragment(position: Int) : Fragment() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 swipeRefreshLayout.setProgressViewEndTarget(false, 250)
+                swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
                 swipeRefreshLayout.isRefreshing = true
                 super.onPageStarted(view, url, favicon)
                 webView.loadUrl(cssLayer)
