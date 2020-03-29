@@ -14,6 +14,7 @@ import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -24,7 +25,7 @@ import wiki.fgo.app.viewModel.UserViewModel
 
 class TabWebViewFragment(position: Int) : Fragment() {
     private val cssLayer: String =
-        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
+        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}.header-container{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
     private val user: UserViewModel by activityViewModels()
     private val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
     lateinit var webView: WebView
@@ -48,16 +49,18 @@ class TabWebViewFragment(position: Int) : Fragment() {
         super.onStart()
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                webView.isVisible = false
                 swipeRefreshLayout.setProgressViewEndTarget(false, 250)
                 swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
                 swipeRefreshLayout.isRefreshing = true
                 super.onPageStarted(view, url, favicon)
                 webView.loadUrl(cssLayer)
-                swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 webView.loadUrl(cssLayer)
+                webView.isVisible = true
+                swipeRefreshLayout.isRefreshing = false
                 val cookieManager: CookieManager = CookieManager.getInstance()
                 if (cookieManager.getCookie(url) == null) {
                     println("cookie is null")
