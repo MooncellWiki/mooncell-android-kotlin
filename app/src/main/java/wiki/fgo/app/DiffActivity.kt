@@ -2,6 +2,7 @@ package wiki.fgo.app
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -161,8 +162,7 @@ class DiffActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(Gravity.LEFT)) {
             drawer_layout.closeDrawer(Gravity.LEFT)
-        }
-        else if (!m_search_view.isIconified) {
+        } else if (!m_search_view.isIconified) {
             m_search_view.isIconified = true
         } else {
             super.onBackPressed()
@@ -289,7 +289,7 @@ class DiffActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun closeDrawerAfterClick(item: MenuItem, custom: String? = null) {
         if (custom != null) {
             drawer_layout.closeDrawer(Gravity.LEFT)
-            currentWebViewGoto(custom)
+            currentWebViewGoto(urlConcat(custom))
         } else {
             drawer_layout.closeDrawer(Gravity.LEFT)
             currentWebViewGoto(urlConcat(item.title.toString()))
@@ -344,7 +344,7 @@ class DiffActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val title = json["title"]
             val description = json["description"]
 
-            if (remoteVersionCode > localVersionCode) {
+            if (remoteVersionCode > localVersionCode && !isFinishing) {
                 runOnUiThread {
                     AlertDialog.Builder(this)
                         .setTitle(title.asString)

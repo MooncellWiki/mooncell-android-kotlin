@@ -506,7 +506,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val title = json["title"]
             val description = json["description"]
 
-            if (remoteVersionCode > localVersionCode) {
+            if (remoteVersionCode > localVersionCode && !isFinishing) {
                 runOnUiThread {
                     AlertDialog.Builder(this)
                         .setTitle(title.asString)
