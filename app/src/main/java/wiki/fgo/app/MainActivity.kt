@@ -230,14 +230,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return super.onKeyDown(keyCode, event)
     }
 
-
     @SuppressLint("RtlHardcoded")
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(Gravity.LEFT)) {
             drawer_layout.closeDrawer(Gravity.LEFT)
         }
         if (!m_search_view.isIconified) {
-            m_search_view.isIconified = true;
+            m_search_view.isIconified = true
         } else {
             super.onBackPressed()
         }
@@ -297,14 +296,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setQueryListener()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        user.getUserName().observe(this, Observer { it ->
+        user.getUserName().observe(this, Observer {
             nav_header_title?.text = it
             with(sharedPref.edit()) {
                 putString("userName", it)
                 apply()
             }
         })
-        user.getUserId().observe(this, Observer { it ->
+        user.getUserId().observe(this, Observer {
             Glide.with(this)
                 .load(avatarUrlConcat(it))
                 .transition(withCrossFade())
@@ -524,8 +523,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     MY_PERMISSIONS_MIPUSH_GROUP
                 )
             }
-        } else {
-            // Permission has already been granted
         }
     }
 
