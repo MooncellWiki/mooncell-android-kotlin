@@ -537,14 +537,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
-    private fun writeLogUserPreference() {
-        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
-        with(sharedPref.edit()) {
-            putString(getString(R.string.local_log_userId), user.getUserId().value)
-            apply()
-        }
-    }
-
     private fun readLogUserPreference() {
         sharedPref.getString("userId", "")?.let { user.userId(it) }
         sharedPref.getString("userName", "岸波白野")?.let { user.userName(it) }
