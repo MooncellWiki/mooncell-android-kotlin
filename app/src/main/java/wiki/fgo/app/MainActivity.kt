@@ -420,8 +420,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         if (loggedUserId !== null) {
-            headIv.minimumHeight = 180
-            headIv.minimumWidth = 180
+            headIv.minimumHeight = 220
+            headIv.minimumWidth = 220
             Glide.with(this)
                 .load(loggedUserId?.let { it1 -> avatarUrlConcat(it1) })
                 .transition(withCrossFade())

@@ -81,6 +81,8 @@ class DiffActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     lateinit var headIv: ImageView
 
+    private var isFloatBallCreated: Boolean? = false
+
     private var searchBaseUrl: String = "https://fgo.wiki/index.php?search="
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -96,6 +98,59 @@ class DiffActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_float -> {
+            if (PermissionUtils.checkPermission(this)) {
+                if (isFloatBallCreated == false) {
+                    createFloatBall()
+                    isFloatBallCreated = true
+                }
+                FloatWindow.get().hide()
+                EasyFloat.with(this)
+                    .setLayout(R.layout.float_window, OnInvokeView {
+                        it.findViewById<WebView>(R.id.float_webView).setFloatWebView()
+                        val url = webView.url
+                        it.findViewById<WebView>(R.id.float_webView).loadUrl(url)
+                        it.findViewById<ImageView>(R.id.ivClose).setOnClickListener {
+                            EasyFloat.dismissAppFloat()
+                            if (isFloatBallCreated == true) {
+                                FloatWindow.get().show()
+                                FloatWindow.destroy()
+                                isFloatBallCreated = false
+                            }
+                        }
+                        it.findViewById<CheckBox>(R.id.checkbox)
+                            .setOnCheckedChangeListener { _, isChecked ->
+                                EasyFloat.appFloatDragEnable(isChecked)
+                            }
+                        it.findViewById<ImageView>(R.id.ivFloatBallCheck).setOnClickListener {
+                            EasyFloat.hideAppFloat()
+                            FloatWindow.get().show()
+                        }
+                        val content = it.findViewById<RelativeLayout>(R.id.rlContent)
+                        val params = content.layoutParams as FrameLayout.LayoutParams
+                        it.findViewById<ScaleImage>(R.id.ivScale).onScaledListener =
+                            object : ScaleImage.OnScaledListener {
+                                override fun onScaled(x: Float, y: Float, event: MotionEvent) {
+                                    params.width += x.toInt()
+                                    params.height += y.toInt()
+                                    content.layoutParams = params
+                                }
+                            }
+                    })
+                    .setShowPattern(ShowPattern.ALL_TIME)
+                    .show()
+            } else {
+                AlertDialog.Builder(this)
+                    .setMessage("若要使用悬浮窗功能，您需要授权Mooncell悬浮窗权限。")
+                    .setPositiveButton("去开启") { _, _ ->
+                        requestFloatPermission()
+                    }
+                    .setNegativeButton("取消") { _, _ -> }
+                    .show()
+            }
+            true
+        }
+
         R.id.action_login -> {
             currentWebViewGoto("https://fgo.wiki/w/特殊:用户登录")
             true
@@ -410,6 +465,14 @@ class DiffActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             EasyFloat.showAppFloat()
             FloatWindow.get().hide()
         }
+    }
+
+    private fun requestFloatPermission() {
+        PermissionUtils.requestPermission(this, object : OnPermissionResult {
+            override fun permissionResult(isOpen: Boolean) {
+                Log.e("debug", isOpen.toString())
+            }
+        })
     }
 }
 
