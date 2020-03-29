@@ -39,7 +39,7 @@ class TabWebViewFragment(position: Int) : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         swipeRefreshLayout =
-            inflater.inflate(R.layout.webview, container, false) as SwipeRefreshLayout
+            inflater.inflate(R.layout.webview_diff, container, false) as SwipeRefreshLayout
         webView = swipeRefreshLayout.findViewById(R.id.webView)
         WebviewInit.setWebView(webView, this.context!!)
         return swipeRefreshLayout
@@ -65,22 +65,27 @@ class TabWebViewFragment(position: Int) : Fragment() {
                 if (cookieManager.getCookie(url) == null) {
                     println("cookie is null")
                 } else {
-                    val cookieMap = mutableMapOf<String, String>()
-                    val cookieStr: String = cookieManager.getCookie(url)
-                    val temp: List<String> = cookieStr.split(";")
-                    for (ar1 in temp) {
-                        val temp1 = ar1.split("=").toTypedArray()
-                        cookieMap[temp1[0].replace(" ", "")] = temp1[1]
+                    try {
+                        val cookieMap = mutableMapOf<String, String>()
+                        val cookieStr: String = cookieManager.getCookie(url)
+                        val temp: List<String> = cookieStr.split(";")
+                        for (ar1 in temp) {
+                            val temp1 = ar1.split("=").toTypedArray()
+                            cookieMap[temp1[0].replace(" ", "")] = temp1[1]
+                        }
+                        if (cookieMap["my_wiki_fateUserName"] != null &&
+                            user.getUserName().value != decode(cookieMap["my_wiki_fateUserName"])
+                        ) {
+                            user.userName(decode(cookieMap["my_wiki_fateUserName"]))
+                        }
+                        if (cookieMap["my_wiki_fateUserID"] != null &&
+                            user.getUserId().value != decode(cookieMap["my_wiki_fateUserID"])
+                        ) {
+                            user.userId(decode(cookieMap["my_wiki_fateUserID"]))
+                        }
                     }
-                    if (cookieMap["my_wiki_fateUserName"] != null &&
-                        user.getUserName().value != decode(cookieMap["my_wiki_fateUserName"])
-                    ) {
-                        user.userName(decode(cookieMap["my_wiki_fateUserName"]))
-                    }
-                    if (cookieMap["my_wiki_fateUserID"] != null &&
-                        user.getUserId().value != decode(cookieMap["my_wiki_fateUserID"])
-                    ) {
-                        user.userId(decode(cookieMap["my_wiki_fateUserID"]))
+                    catch (e: IllegalStateException) {
+                        println("处理IllegalStateException")
                     }
                 }
                 super.onPageFinished(view, url)

@@ -22,7 +22,7 @@
         android:layout_height="match_parent">
 
         <include
-            layout="@layout/app_bar_main"/>
+            layout="@layout/app_bar"/>
 
         <include
             layout="@layout/webview"/>

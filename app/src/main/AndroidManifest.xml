@@ -27,6 +27,11 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".DiffActivity"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+
+        <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan" >
 
