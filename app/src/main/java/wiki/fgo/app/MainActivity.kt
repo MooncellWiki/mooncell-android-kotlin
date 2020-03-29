@@ -90,9 +90,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var pager: ViewPager2
 
-    private fun currWebViewGoto(url: String) {
-        supportFragmentManager.fragments.filterIsInstance<TabWebViewFragment>()
-            .find { it.POSITION == pager.currentItem }!!.webView.loadUrl(url)
+    private fun getCurrentWebViewFragment(): TabWebViewFragment? {
+        return (pager.adapter as TabAdapter).fragments[pager.currentItem]
+    }
+
+    private fun currentWebViewGoto(url: String) {
+        getCurrentWebViewFragment()!!.webView.loadUrl(url)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -150,22 +153,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         R.id.action_login -> {
-            currWebViewGoto("https://fgo.wiki/w/特殊:用户登录")
+            currentWebViewGoto("https://fgo.wiki/w/特殊:用户登录")
             true
         }
 
         R.id.action_notice -> {
-            currWebViewGoto("https://fgo.wiki/w/特殊:通知")
+            currentWebViewGoto("https://fgo.wiki/w/特殊:通知")
             true
         }
 
         R.id.action_settings -> {
-            currWebViewGoto("https://fgo.wiki/w/特殊:参数设置")
+            currentWebViewGoto("https://fgo.wiki/w/特殊:参数设置")
             true
         }
 
         R.id.action_about -> {
-            currWebViewGoto("https://fgo.wiki/w/Mooncell:关于")
+            currentWebViewGoto("https://fgo.wiki/w/Mooncell:关于")
             true
         }
 
@@ -211,20 +214,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-//    @SuppressLint("RtlHardcoded")
-//    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-//        // Check if the key event was the Back button and if there's history
-//        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack() && !drawer_layout.isDrawerOpen(
-//                Gravity.LEFT
-//            )
-//        ) {
-//            webView.goBack()
-//            return true
-//        }
-//        // If it wasn't the Back key or there's no web page history, bubble up to the default
-//        // system behavior (probably exit the activity)
-//        return super.onKeyDown(keyCode, event)
-//    }
+    @SuppressLint("RtlHardcoded")
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        // Check if the key event was the Back button and if there's history
+        val webView = getCurrentWebViewFragment()!!.webView
+        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack() && !drawer_layout.isDrawerOpen(
+                Gravity.LEFT
+            )
+        ) {
+            webView.goBack()
+            return true
+        }
+        // If it wasn't the Back key or there's no web page history, bubble up to the default
+        // system behavior (probably exit the activity)
+        return super.onKeyDown(keyCode, event)
+    }
 
     @SuppressLint("RtlHardcoded")
     override fun onBackPressed() {
@@ -343,7 +347,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         m_search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 val searchUrl = searchBaseUrl + query.toString()
-                currWebViewGoto(searchUrl)
+                currentWebViewGoto(searchUrl)
                 m_search_view.setQuery("", false)
                 return true
             }
@@ -385,17 +389,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun closeDrawerAfterClick(item: MenuItem, custom: String? = null) {
         if (custom != null) {
             drawer_layout.closeDrawer(Gravity.LEFT)
-            currWebViewGoto(custom)
+            currentWebViewGoto(custom)
         } else {
             drawer_layout.closeDrawer(Gravity.LEFT)
-            currWebViewGoto(urlConcat(item.title.toString()))
+            currentWebViewGoto(urlConcat(item.title.toString()))
         }
     }
 
     @SuppressLint("RtlHardcoded")
     private fun activityClickListener(item: MenuItem) {
         drawer_layout.closeDrawer(Gravity.LEFT)
-        currWebViewGoto(urlConcat(item.title.toString()))
+        currentWebViewGoto(urlConcat(item.title.toString()))
     }
 
     private fun showSidebarResponse(stringList: List<String>) {
@@ -446,7 +450,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .setTitle(title.asString)
                         .setMessage(description.asString)
                         .setPositiveButton("去更新") { _, _ ->
-                            currWebViewGoto("https://fgo.wiki/w/Mooncell:Appclient")
+                            currentWebViewGoto("https://fgo.wiki/w/Mooncell:Appclient")
                         }
                         .setNegativeButton("取消") { _, _ -> }
                         .show()
