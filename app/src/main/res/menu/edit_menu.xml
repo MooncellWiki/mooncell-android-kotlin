@@ -36,6 +36,10 @@
         android:title="@string/action_about"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/action_about_client"
+        android:title="@string/action_about_client"
+        app:showAsAction="never"/>
+
     <item android:id="@+id/action_exit"
         android:title="@string/action_exit"
         app:showAsAction="never"/>

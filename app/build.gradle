@@ -26,6 +26,9 @@ android {
         buildConfigField "String", "MI_PUSH_APP_ID", "\"${MI_PUSH_APP_ID}\""
         buildConfigField "String", "MI_PUSH_APP_KEY", "\"${MI_PUSH_APP_KEY}\""
     }
+    applicationVariants.all { variant ->
+        variant.resValue "string", "versionName", variant.versionName
+    }
     buildTypes {
         release {
             minifyEnabled false

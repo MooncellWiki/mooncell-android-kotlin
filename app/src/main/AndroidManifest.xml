@@ -15,6 +15,7 @@
     <permission
         android:name="wiki.fgo.app.permission.MIPUSH_RECEIVE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="wiki.fgo.app.permission.MIPUSH_RECEIVE" />
 
     <application
@@ -26,6 +27,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".AboutActivity">
+
+        </activity>
         <activity android:name=".MainActivity">
 
         </activity>
@@ -67,6 +71,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -79,7 +84,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="wiki.fgo.app.MiPushBroadcast"
+            android:name=".MiPushBroadcast"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />
