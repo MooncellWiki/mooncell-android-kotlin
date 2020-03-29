@@ -235,7 +235,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (drawer_layout.isDrawerOpen(Gravity.LEFT)) {
             drawer_layout.closeDrawer(Gravity.LEFT)
         }
-        if (!m_search_view.isIconified) {
+        else if (!m_search_view.isIconified) {
             m_search_view.isIconified = true
         } else {
             super.onBackPressed()
