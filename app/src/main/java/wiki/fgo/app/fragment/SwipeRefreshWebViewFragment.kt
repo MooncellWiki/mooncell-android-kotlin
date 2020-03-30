@@ -23,14 +23,13 @@ import wiki.fgo.app.R
 import wiki.fgo.app.viewModel.UserViewModel
 
 
-class TabWebViewFragment(position: Int) : Fragment() {
+class SwipeRefreshWebViewFragment() : Fragment() {
     private val cssLayer: String =
         "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}.header-container{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
     private val user: UserViewModel by activityViewModels()
     private val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
     lateinit var webView: WebView
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    val POSITION = position
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
@@ -39,7 +38,8 @@ class TabWebViewFragment(position: Int) : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         swipeRefreshLayout =
-            inflater.inflate(R.layout.webview_diff, container, false) as SwipeRefreshLayout
+            inflater.inflate(R.layout.swipe_refresh_webview, container, false) as SwipeRefreshLayout
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
         webView = swipeRefreshLayout.findViewById(R.id.webView)
         WebviewInit.setWebView(webView, this.context!!)
         return swipeRefreshLayout
@@ -83,8 +83,7 @@ class TabWebViewFragment(position: Int) : Fragment() {
                         ) {
                             user.userId(decode(cookieMap["my_wiki_fateUserID"]))
                         }
-                    }
-                    catch (e: IllegalStateException) {
+                    } catch (e: IllegalStateException) {
                         println("处理IllegalStateException")
                     }
                 }

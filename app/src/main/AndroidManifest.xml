@@ -30,11 +30,6 @@
         <activity android:name=".AboutActivity">
 
         </activity>
-        <activity
-            android:name=".DiffActivity"
-            android:windowSoftInputMode="adjustPan" >
-          
-        </activity>
 
         <activity
             android:name=".MainActivity"

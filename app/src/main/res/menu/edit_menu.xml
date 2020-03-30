@@ -20,8 +20,9 @@
         android:title="@string/action_login"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/action_diff"
-        android:title="@string/action_diff"
+    <item
+        android:id="@+id/action_switch"
+        android:title=""
         app:showAsAction="never"/>
 
     <item android:id="@+id/action_float"
