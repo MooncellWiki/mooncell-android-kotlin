@@ -72,6 +72,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/grey"
+                android:paddingVertical="15dp"
+                android:paddingStart="10dp"
+                android:text="@string/developer_info"
+                android:textColor="@color/deepGrey" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/developers_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey" />
 
             <TextView
                 android:layout_width="match_parent"

@@ -45,4 +45,5 @@
     <string name="tab">tab1</string>
     <string name="license_info">开源项目鸣谢</string>
     <string name="about_developer">关于开发者</string>
+    <string name="developer_info">开发者信息</string>
 </resources>

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +29,10 @@ class AboutActivity : AppCompatActivity() {
         list.adapter = MyAdapter(data)
         list.layoutManager = LinearLayoutManager(this)
         list.addItemDecoration(MyItemDecoration())
+        val list1 = findViewById<RecyclerView>(R.id.developers_list)
+        list1.adapter = DeveloperAdapter(developerData)
+        list1.layoutManager = LinearLayoutManager(this)
+        list1.addItemDecoration(MyItemDecoration())
     }
 
     private val data = arrayOf(
@@ -40,6 +45,34 @@ class AboutActivity : AppCompatActivity() {
             "name" to "OkHttp",
             "source" to "https://github.com/square/okhttp",
             "license" to "https://raw.githubusercontent.com/square/okhttp/master/LICENSE.txt"
+        ),
+        mapOf(
+            "name" to "FloatWindow",
+            "source" to "https://github.com/yhaolpz/FloatWindow",
+            "license" to "https://raw.githubusercontent.com/yhaolpz/FloatWindow/master/LICENSE.txt"
+        ),
+        mapOf(
+            "name" to "EasyFloat",
+            "source" to "https://github.com/princekin-f/EasyFloat",
+            "license" to "https://raw.githubusercontent.com/princekin-f/EasyFloat/master/LICENSE"
+        ),
+        mapOf(
+            "name" to "Demo_MiPush",
+            "source" to "https://github.com/Carson-Ho/Demo_MiPush",
+            "license" to "https://github.com/Carson-Ho/Demo_MiPush"
+        )
+    )
+
+    private val developerData = arrayOf(
+        mapOf(
+            "name" to "StarHeartHunt",
+            "avatar" to "http://avatar.mooncell.wiki/mc/558/128.png",
+            "desc" to "Main Developer"
+        ),
+        mapOf(
+            "name" to "夕舞八弦",
+            "avatar" to "http://avatar.mooncell.wiki/mc/558/128.png",
+            "desc" to "Main Developer"
         )
     )
 
@@ -83,5 +116,30 @@ class AboutActivity : AppCompatActivity() {
             outRect.set(0, 0, 0, 3)
 //            super.getItemOffsets(outRect, view, parent, state)
         }
+    }
+
+    inner class DeveloperAdapter(private val list1: Array<Map<String, String>>) :
+        RecyclerView.Adapter<DeveloperViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeveloperViewHolder {
+            val v: View = LayoutInflater.from(parent.context)
+                .inflate(R.layout.developers_list_item, parent, false)
+            return DeveloperViewHolder(v)
+        }
+
+        override fun getItemCount(): Int {
+            return list1.size
+        }
+
+        override fun onBindViewHolder(holder: DeveloperViewHolder, position: Int) {
+            holder.avatar.setImageDrawable(resources.getDrawable(R.mipmap.ic_launcher, null))
+            holder.name.text = list1[position]["name"]
+            holder.desc.text = list1[position]["desc"]
+        }
+    }
+
+    inner class DeveloperViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val avatar: ImageView = view.findViewById(R.id.avatar)
+        val name: TextView = view.findViewById(R.id.name)
+        val desc: TextView = view.findViewById(R.id.desc)
     }
 }
