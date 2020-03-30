@@ -12,7 +12,10 @@ import android.os.Bundle
 import android.os.Message
 import android.util.Log
 import android.view.*
-import android.webkit.*
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -52,11 +55,11 @@ import kotlinx.android.synthetic.main.nav_header.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
+import wiki.fgo.app.fragment.MultiWebViewFragment
+import wiki.fgo.app.fragment.SwipeRefreshWebViewFragment
 import wiki.fgo.app.network.HttpUtil
 import wiki.fgo.app.network.HttpUtil.Companion.avatarUrlConcat
 import wiki.fgo.app.network.HttpUtil.Companion.urlConcat
-import wiki.fgo.app.fragment.MultiWebViewFragment
-import wiki.fgo.app.fragment.SwipeRefreshWebViewFragment
 import wiki.fgo.app.viewModel.UserViewModel
 import java.io.IOException
 import java.util.regex.Matcher
@@ -88,6 +91,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var user: UserViewModel
 
     private lateinit var headIv: ImageView
+
     private lateinit var fc: FragmentsController
 
     inner class FragmentsController(private var isTab: Boolean) {
@@ -240,12 +244,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             finish()
             true
         }
+
         R.id.action_about_client -> {
             val intent = Intent()
             intent.setClass(this, AboutActivity::class.java)
             startActivity(intent)
             true
         }
+
 /*
 TODO
         R.id.action_favorite -> {
@@ -274,9 +280,8 @@ TODO
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.top_bar_menu, menu)
-        if (userName != null && menu != null) {
-            menu.findItem(R.id.action_notice).isVisible = true
+        if (menu !== null) {
+            menuInflater.inflate(R.menu.top_bar_menu, menu)
         }
         return true
     }
@@ -284,6 +289,10 @@ TODO
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu!!.findItem(R.id.action_switch).title =
             if (fc.getIsTab()) "单栏模式" else "多栏模式"
+        if (user.getUserName().value != "岸波白野") {
+            menu.findItem(R.id.action_notice).isVisible = true
+            menu.findItem(R.id.action_login).isVisible = false
+        }
         return super.onPrepareOptionsMenu(menu)
     }
 
