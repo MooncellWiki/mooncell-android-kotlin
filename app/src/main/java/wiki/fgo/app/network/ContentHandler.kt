@@ -1,4 +1,4 @@
-package wiki.fgo.app.HttpRequest
+package wiki.fgo.app.network
 
 import android.util.Log
 import org.xml.sax.Attributes

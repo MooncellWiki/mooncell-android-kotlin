@@ -52,9 +52,9 @@ import kotlinx.android.synthetic.main.nav_header.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
-import wiki.fgo.app.HttpRequest.HttpUtil
-import wiki.fgo.app.HttpRequest.HttpUtil.Companion.avatarUrlConcat
-import wiki.fgo.app.HttpRequest.HttpUtil.Companion.urlConcat
+import wiki.fgo.app.network.HttpUtil
+import wiki.fgo.app.network.HttpUtil.Companion.avatarUrlConcat
+import wiki.fgo.app.network.HttpUtil.Companion.urlConcat
 import wiki.fgo.app.fragment.MultiWebViewFragment
 import wiki.fgo.app.fragment.SwipeRefreshWebViewFragment
 import wiki.fgo.app.viewModel.UserViewModel

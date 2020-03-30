@@ -1,4 +1,4 @@
-package wiki.fgo.app.HttpRequest
+package wiki.fgo.app.network
 
 import okhttp3.Callback
 import okhttp3.OkHttpClient
