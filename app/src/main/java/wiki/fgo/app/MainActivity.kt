@@ -24,13 +24,13 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
@@ -55,7 +55,6 @@ import okhttp3.Response
 import wiki.fgo.app.HttpRequest.HttpUtil
 import wiki.fgo.app.HttpRequest.HttpUtil.Companion.avatarUrlConcat
 import wiki.fgo.app.HttpRequest.HttpUtil.Companion.urlConcat
-import wiki.fgo.app.adapter.LayoutAdapter
 import wiki.fgo.app.fragment.MultiWebViewFragment
 import wiki.fgo.app.fragment.SwipeRefreshWebViewFragment
 import wiki.fgo.app.viewModel.UserViewModel
@@ -71,11 +70,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val checkUpdateUrl =
         "https://fgo.wiki/images/wiki/merlin/client/update.json"
 
-    var cookieMap = mutableMapOf<String, String>()
-
     var userName: String? = null
-
-    var loggedUserId: String? = null
 
     var isFloatBallCreated: Boolean? = false
 
@@ -90,18 +85,71 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     lateinit var sharedPref: SharedPreferences
 
-    private lateinit var viewPager: ViewPager2
-
     private lateinit var user: UserViewModel
 
-    lateinit var headIv: ImageView
+    private lateinit var headIv: ImageView
+    private lateinit var fc: FragmentsController
+
+    inner class FragmentsController(private var isTab: Boolean) {
+        var isFirst = true
+        private val fragments = mutableMapOf<Int, Fragment>()
+        private fun beMulti(): Fragment {
+            if (fragments[1] == null) {
+                fragments[1] = MultiWebViewFragment()
+            }
+            isTab = true
+            return fragments[1]!!
+        }
+
+        private fun beSingle(): Fragment {
+            if (fragments[0] == null) {
+                fragments[0] = SwipeRefreshWebViewFragment()
+            }
+            isTab = false
+            return fragments[0]!!
+        }
+
+        fun switch(tran: FragmentTransaction) {
+            val f: Fragment
+            val curr = getCurr()
+            if (isTab) {
+                isTab = false
+                f = beSingle()
+            } else {
+                isTab = true
+                f = beMulti()
+            }
+            if (isFirst) {
+                tran.hide(curr)
+                tran.add(R.id.fragment_container_view, f)
+                tran.commit()
+                isFirst = false
+            } else {
+                tran.hide(curr)
+                tran.show(f)
+                tran.commit()
+            }
+        }
+
+        fun getCurr(): Fragment {
+            return if (isTab) {
+                beMulti()
+            } else {
+                beSingle()
+            }
+        }
+
+        fun getIsTab(): Boolean {
+            return isTab
+        }
+    }
 
     private fun getCurrentWebView(): WebView {
-        val curr = (viewPager.adapter as LayoutAdapter).fragments[viewPager.currentItem]
-        return if (viewPager.currentItem == 0) {
-            (curr as SwipeRefreshWebViewFragment).webView
-        } else {
+        val curr = fc.getCurr()
+        return if (fc.getIsTab()) {
             (curr as MultiWebViewFragment).getCurrentWebViewFragment()!!.webView
+        } else {
+            (curr as SwipeRefreshWebViewFragment).webView
         }
     }
 
@@ -165,9 +213,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         R.id.action_switch -> {
-            viewPager.currentItem = (viewPager.currentItem - 1) * (viewPager.currentItem - 1)
+            fc.switch(supportFragmentManager.beginTransaction())
             with(sharedPref.edit()) {
-                putBoolean("isTab", viewPager.currentItem == 1)
+                putBoolean("isTab", fc.getIsTab())
                 apply()
             }
             true
@@ -235,7 +283,7 @@ TODO
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu!!.findItem(R.id.action_switch).title =
-            if (viewPager.currentItem == 0) "多栏模式" else "单栏模式"
+            if (fc.getIsTab()) "单栏模式" else "多栏模式"
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -309,12 +357,10 @@ TODO
         readLogUserPreference()
         initDrawer()
         setDrawer()
-        viewPager = findViewById(R.id.vp)
-        val isTab = sharedPref.getBoolean("isTab", false)
-        viewPager.adapter = LayoutAdapter(this)
-        viewPager.isUserInputEnabled = false
-        viewPager.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT_DEFAULT
-        viewPager.currentItem = if (isTab) 1 else 0
+        fc = FragmentsController(sharedPref.getBoolean("isTab", false))
+        val tran = supportFragmentManager.beginTransaction()
+        tran.add(R.id.fragment_container_view, fc.getCurr())
+        tran.commit()
         sendRequestWithOkHttp(sidebarFetchUrl, 1)
         sendRequestWithOkHttp(checkUpdateUrl, 2)
         setQueryListener()
