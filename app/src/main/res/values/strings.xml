@@ -6,7 +6,7 @@
     <string name="title_activity_example">exampleActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">岸波白野</string>
+    <string name="nav_header_title">未登录</string>
     <string name="nav_header_subtitle">Ciao~</string>
     <string name="nav_header_desc">Navigation header</string>
 

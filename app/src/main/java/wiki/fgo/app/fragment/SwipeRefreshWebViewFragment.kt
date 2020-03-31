@@ -70,15 +70,16 @@ class SwipeRefreshWebViewFragment() : Fragment() {
                             val temp1 = ar1.split("=").toTypedArray()
                             cookieMap[temp1[0].replace(" ", "")] = temp1[1]
                         }
-                        if (cookieMap["my_wiki_fateUserName"] != null &&
-                            user.getUserName().value != decode(cookieMap["my_wiki_fateUserName"])
-                        ) {
-                            user.userName(decode(cookieMap["my_wiki_fateUserName"]))
-                        }
-                        if (cookieMap["my_wiki_fateUserID"] != null &&
-                            user.getUserId().value != decode(cookieMap["my_wiki_fateUserID"])
-                        ) {
-                            user.userId(decode(cookieMap["my_wiki_fateUserID"]))
+                        if (cookieMap["my_wiki_fateUserID"] != null && cookieMap["my_wiki_fateUserName"] != null) {
+                            if (user.getUserName().value != decode(cookieMap["my_wiki_fateUserName"])) {
+                                user.userName(decode(cookieMap["my_wiki_fateUserName"]))
+                            }
+                            if (user.getUserId().value != decode(cookieMap["my_wiki_fateUserID"])) {
+                                user.userId(decode(cookieMap["my_wiki_fateUserID"]))
+                            }
+                        } else {
+                            if (user.getUserId().value != "") user.userId("")
+                            if (user.getUserName().value != "未登录") user.userName("未登录")
                         }
                     } catch (e: IllegalStateException) {
                         println("处理IllegalStateException")
