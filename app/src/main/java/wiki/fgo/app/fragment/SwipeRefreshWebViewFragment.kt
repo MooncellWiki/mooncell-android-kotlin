@@ -45,13 +45,12 @@ class SwipeRefreshWebViewFragment() : Fragment() {
 
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                webView.loadUrl(cssLayer)
                 webView.isVisible = false
                 swipeRefreshLayout.setProgressViewEndTarget(false, 250)
                 swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
                 swipeRefreshLayout.isRefreshing = true
-                super.onPageStarted(view, url, favicon)
                 webView.loadUrl(cssLayer)
+                super.onPageStarted(view, url, favicon)
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
