@@ -74,9 +74,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     var isFloatBallCreated: Boolean? = false
 
-    private var cssLayer: String =
-        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
-
     private var searchBaseUrl: String = "https://fgo.wiki/index.php?search="
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -286,7 +283,7 @@ TODO
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu!!.findItem(R.id.action_switch).title =
             if (fc.getIsTab()) "单栏模式" else "多栏模式"
-        if (user.getUserName().value != "岸波白野") {
+        if (user.getUserId().value != "") {
             menu.findItem(R.id.action_notice).isVisible = true
             menu.findItem(R.id.action_login).isVisible = false
         }
