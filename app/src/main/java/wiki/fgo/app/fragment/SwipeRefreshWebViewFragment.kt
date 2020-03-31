@@ -55,8 +55,9 @@ class SwipeRefreshWebViewFragment() : Fragment() {
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 webView.loadUrl(cssLayer)
-                webView.isVisible = true
+                webView.loadUrl(cssLayer)
                 swipeRefreshLayout.isRefreshing = false
+                webView.isVisible = true
                 val cookieManager: CookieManager = CookieManager.getInstance()
                 if (cookieManager.getCookie(url) == null) {
                     println("cookie is null")
