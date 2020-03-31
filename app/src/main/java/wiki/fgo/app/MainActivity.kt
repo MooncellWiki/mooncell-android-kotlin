@@ -16,10 +16,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.CheckBox
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.RelativeLayout
+import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -451,8 +448,9 @@ TODO
             R.string.navigation_drawer_close
         ) {
             override fun onDrawerOpened(drawerView: View) {
-                if (nav_header_title.text != user.getUserName().value) {
-                    nav_header_title.text = user.getUserName().value
+                val header = drawerView.findViewById<TextView>(R.id.nav_header_title)
+                if (header.text != user.getUserName().value) {
+                    header.text = user.getUserName().value
                 }
                 super.onDrawerOpened(drawerView)
             }
