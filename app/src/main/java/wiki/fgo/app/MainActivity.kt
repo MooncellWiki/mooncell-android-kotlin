@@ -454,9 +454,8 @@ TODO
             R.string.navigation_drawer_close
         ) {
             override fun onDrawerOpened(drawerView: View) {
-                val header = drawerView.findViewById<TextView>(R.id.nav_header_title)
-                if (header.text != user.getUserName().value) {
-                    header.text = user.getUserName().value
+                if (nav_header_title?.text != user.getUserName().value) {
+                    nav_header_title?.text = user.getUserName().value
                 }
                 super.onDrawerOpened(drawerView)
             }
