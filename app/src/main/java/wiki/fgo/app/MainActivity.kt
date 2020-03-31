@@ -488,6 +488,11 @@ TODO
         }
     }
 
+    fun gotoUserPage(view: View) {
+        getCurrentWebView().loadUrl("https://fgo.wiki/w/用户:${user.getUserName().value}")
+        drawer_layout.closeDrawer(GravityCompat.START)
+    }
+
     fun parseSidebarJsonWithJsonObject(jsonData: String) {
         try {
             val json: JsonElement = Gson().fromJson(jsonData)
