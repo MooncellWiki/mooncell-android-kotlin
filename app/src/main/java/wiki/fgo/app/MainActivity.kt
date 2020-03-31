@@ -70,7 +70,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val checkUpdateUrl =
         "https://fgo.wiki/images/wiki/merlin/client/update.json"
 
-    var userName: String? = null
 
     var isFloatBallCreated: Boolean? = false
 
@@ -314,7 +313,7 @@ TODO
             drawer_layout.closeDrawer(GravityCompat.START)
         }
         if (!m_search_view.isIconified) {
-            m_search_view.isIconified = true;
+            m_search_view.isIconified = true
         } else {
             super.onBackPressed()
         }
@@ -486,7 +485,12 @@ TODO
     }
 
     fun gotoUserPage(view: View) {
-        getCurrentWebView().loadUrl("https://fgo.wiki/w/用户:${user.getUserName().value}")
+        if (user.getUserId().value == "") {
+            getCurrentWebView().loadUrl("https://fgo.wiki/w/特殊:用户登录")
+        } else {
+            getCurrentWebView().loadUrl("https://fgo.wiki/w/用户:${user.getUserName().value}")
+        }
+
         drawer_layout.closeDrawer(GravityCompat.START)
     }
 
