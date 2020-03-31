@@ -5,10 +5,6 @@ on:
     branches: [ master ]
     paths: 
       - app/**
-  pull_request:
-    branches: [ master ]
-    paths: 
-      - app/**
 jobs:
   build:
     runs-on: ubuntu-latest
