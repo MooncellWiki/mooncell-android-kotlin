@@ -14,6 +14,7 @@
     <string name="action_notice">通知</string>
     <string name="action_login">登录</string>
     <string name="action_about">关于Mooncell</string>
+    <string name="action_about_client">关于客户端</string>
     <string name="sidebar_group2_title">常用</string>
     <string name="svt_overview">英灵图鉴</string>
     <string name="ce_overview">概念礼装图鉴</string>
@@ -41,4 +42,8 @@
     <string name="main_page">首页</string>
     <string name="float_checkbox_state">是否可拖拽</string>
     <string name="action_settings">设置</string>
+    <string name="tab">tab1</string>
+    <string name="license_info">开源项目鸣谢</string>
+    <string name="about_developer">关于开发者</string>
+    <string name="developer_info">开发者信息</string>
 </resources>
