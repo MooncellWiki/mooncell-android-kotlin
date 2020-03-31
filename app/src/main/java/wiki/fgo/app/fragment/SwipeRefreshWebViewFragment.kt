@@ -18,9 +18,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import wiki.fgo.app.webview.WebviewInit
 import wiki.fgo.app.R
 import wiki.fgo.app.viewModel.UserViewModel
+import wiki.fgo.app.webview.WebviewInit
 
 
 class SwipeRefreshWebViewFragment() : Fragment() {
@@ -42,11 +42,7 @@ class SwipeRefreshWebViewFragment() : Fragment() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
         webView = swipeRefreshLayout.findViewById(R.id.webView)
         WebviewInit.setWebView(webView, this.context!!)
-        return swipeRefreshLayout
-    }
 
-    override fun onStart() {
-        super.onStart()
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 webView.isVisible = false
@@ -122,5 +118,7 @@ class SwipeRefreshWebViewFragment() : Fragment() {
             }
         }
         webView.loadUrl(mainUrl)
+
+        return swipeRefreshLayout
     }
 }
