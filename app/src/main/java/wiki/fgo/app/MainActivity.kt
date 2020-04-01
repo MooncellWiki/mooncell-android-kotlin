@@ -16,10 +16,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.CheckBox
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.RelativeLayout
+import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -73,7 +70,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val checkUpdateUrl =
         "https://fgo.wiki/images/wiki/merlin/client/update.json"
 
-    var userName: String? = null
 
     var isFloatBallCreated: Boolean? = false
 
@@ -209,7 +205,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         R.id.action_login -> {
-            getCurrentWebView().loadUrl("https://fgo.wiki/w/特殊:用户登录")
+            if (user.getUserId().value == "") {
+                getCurrentWebView().loadUrl("https://fgo.wiki/w/特殊:用户登录")
+            } else {
+                getCurrentWebView().loadUrl("https://fgo.wiki/w/特殊:用户退出")
+            }
             true
         }
 
@@ -286,9 +286,12 @@ TODO
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu!!.findItem(R.id.action_switch).title =
             if (fc.getIsTab()) "单栏模式" else "多栏模式"
-        if (user.getUserId().value != "") {
+        if (user.getUserId().value == "") {
+            menu.findItem(R.id.action_notice).isVisible = false
+            menu.findItem(R.id.action_login).title = "登录"
+        } else {
             menu.findItem(R.id.action_notice).isVisible = true
-            menu.findItem(R.id.action_login).isVisible = false
+            menu.findItem(R.id.action_login).title = "登出"
         }
         return super.onPrepareOptionsMenu(menu)
     }
@@ -317,7 +320,7 @@ TODO
             drawer_layout.closeDrawer(GravityCompat.START)
         }
         if (!m_search_view.isIconified) {
-            m_search_view.isIconified = true;
+            m_search_view.isIconified = true
         } else {
             super.onBackPressed()
         }
@@ -451,8 +454,8 @@ TODO
             R.string.navigation_drawer_close
         ) {
             override fun onDrawerOpened(drawerView: View) {
-                if (nav_header_title.text != user.getUserName().value) {
-                    nav_header_title.text = user.getUserName().value
+                if (nav_header_title?.text != user.getUserName().value) {
+                    nav_header_title?.text = user.getUserName().value
                 }
                 super.onDrawerOpened(drawerView)
             }
@@ -485,6 +488,16 @@ TODO
                 subMenu.add(subStringList.elementAt(0))
             }
         }
+    }
+
+    fun gotoUserPage(view: View) {
+        if (user.getUserId().value == "") {
+            getCurrentWebView().loadUrl("https://fgo.wiki/w/特殊:用户登录")
+        } else {
+            getCurrentWebView().loadUrl("https://fgo.wiki/w/用户:${user.getUserName().value}")
+        }
+
+        drawer_layout.closeDrawer(GravityCompat.START)
     }
 
     fun parseSidebarJsonWithJsonObject(jsonData: String) {
@@ -612,7 +625,7 @@ TODO
 
     private fun readLogUserPreference() {
         sharedPref.getString("userId", "")?.let { user.userId(it) }
-        sharedPref.getString("userName", "岸波白野")?.let { user.userName(it) }
+        sharedPref.getString("userName", "未登录")?.let { user.userName(it) }
     }
 
     private fun createFloatBall() {

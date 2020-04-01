@@ -49,12 +49,11 @@ class SwipeRefreshWebViewFragment() : Fragment() {
                 swipeRefreshLayout.setProgressViewEndTarget(false, 250)
                 swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
                 swipeRefreshLayout.isRefreshing = true
-                super.onPageStarted(view, url, favicon)
                 webView.loadUrl(cssLayer)
+                super.onPageStarted(view, url, favicon)
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                webView.loadUrl(cssLayer)
                 webView.loadUrl(cssLayer)
                 swipeRefreshLayout.isRefreshing = false
                 webView.isVisible = true
@@ -70,15 +69,16 @@ class SwipeRefreshWebViewFragment() : Fragment() {
                             val temp1 = ar1.split("=").toTypedArray()
                             cookieMap[temp1[0].replace(" ", "")] = temp1[1]
                         }
-                        if (cookieMap["my_wiki_fateUserName"] != null &&
-                            user.getUserName().value != decode(cookieMap["my_wiki_fateUserName"])
-                        ) {
-                            user.userName(decode(cookieMap["my_wiki_fateUserName"]))
-                        }
-                        if (cookieMap["my_wiki_fateUserID"] != null &&
-                            user.getUserId().value != decode(cookieMap["my_wiki_fateUserID"])
-                        ) {
-                            user.userId(decode(cookieMap["my_wiki_fateUserID"]))
+                        if (cookieMap["my_wiki_fateUserID"] != null && cookieMap["my_wiki_fateUserName"] != null) {
+                            if (user.getUserName().value != decode(cookieMap["my_wiki_fateUserName"])) {
+                                user.userName(decode(cookieMap["my_wiki_fateUserName"]))
+                            }
+                            if (user.getUserId().value != decode(cookieMap["my_wiki_fateUserID"])) {
+                                user.userId(decode(cookieMap["my_wiki_fateUserID"]))
+                            }
+                        } else {
+                            if (user.getUserId().value != "") user.userId("")
+                            if (user.getUserName().value != "未登录") user.userName("未登录")
                         }
                     } catch (e: IllegalStateException) {
                         println("处理IllegalStateException")
@@ -101,7 +101,6 @@ class SwipeRefreshWebViewFragment() : Fragment() {
         }
         swipeRefreshLayout.setOnRefreshListener {
             webView.reload()
-            webView.loadUrl(cssLayer)
         }
         webView.webChromeClient = object : WebChromeClient() {
             override fun onCreateWindow(

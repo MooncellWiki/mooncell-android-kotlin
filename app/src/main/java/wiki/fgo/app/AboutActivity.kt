@@ -21,7 +21,7 @@ class AboutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
         setSupportActionBar(toolbar)
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener(fun(_: View) {
             finish()
         })
@@ -60,6 +60,11 @@ class AboutActivity : AppCompatActivity() {
             "name" to "Demo_MiPush",
             "source" to "https://github.com/Carson-Ho/Demo_MiPush",
             "license" to "https://github.com/Carson-Ho/Demo_MiPush"
+        ),
+        mapOf(
+            "name" to "about-page",
+            "source" to "https://github.com/PureWriter/about-page",
+            "license" to "https://raw.githubusercontent.com/PureWriter/about-page/master/LICENSE"
         )
     )
 

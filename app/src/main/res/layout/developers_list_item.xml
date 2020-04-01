@@ -13,7 +13,6 @@
     <TextView
         style="@style/AboutPage.ContributorName"
         android:id="@+id/name"
-        android:layout_toRightOf="@id/avatar"
         android:layout_toEndOf="@id/avatar"
         android:layout_alignTop="@id/avatar"
         tools:text="drakeet"/>
@@ -22,7 +21,6 @@
         style="@style/AboutPage.ContributorDesc"
         android:id="@+id/desc"
         android:layout_below="@id/name"
-        android:layout_toRightOf="@id/avatar"
         android:layout_toEndOf="@id/avatar"
         tools:text="Developer and Designer"/>
 

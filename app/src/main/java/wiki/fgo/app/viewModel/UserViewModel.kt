@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class UserViewModel : ViewModel() {
-    private val userName = MutableLiveData("岸波白野")
+    private val userName = MutableLiveData("未登录")
     private val userId = MutableLiveData("")
     fun getUserName(): LiveData<String> {
         return userName
