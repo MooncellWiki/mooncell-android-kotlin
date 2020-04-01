@@ -1,32 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingVertical="20dp"
-    android:background="@color/white">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/AboutPage.Item.Card">
 
     <TextView
+        style="@style/AboutPage.LicenseTitle"
         android:id="@+id/dependent_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:paddingStart="20dp"
-        android:textSize="7pt" />
+        android:textColor="@color/black" />
 
     <TextView
+        style="@style/AboutPage.LicenseHint"
         android:id="@+id/dependent_source"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/deepGrey"
-        android:paddingStart="20dp"
-        android:textSize="6pt" />
+        android:layout_below="@id/dependent_name" />
 
     <TextView
+        style="@style/AboutPage.LicenseHint"
         android:id="@+id/dependent_license"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/deepGrey"
-        android:paddingStart="20dp"
-        android:textSize="6pt" />
-</LinearLayout>
+        android:layout_below="@id/dependent_source" />
+</RelativeLayout>
