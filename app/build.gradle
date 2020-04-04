@@ -20,6 +20,8 @@ android {
         versionCode 8
         versionName "1.2.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        def MI_PUSH_APP_ID = project.getProperties().get("MI_PUSH_APP_ID")
+        def MI_PUSH_APP_KEY = project.getProperties().get("MI_PUSH_APP_KEY")
         buildConfigField "String", "MI_PUSH_APP_ID", "\"${MI_PUSH_APP_ID}\""
         buildConfigField "String", "MI_PUSH_APP_KEY", "\"${MI_PUSH_APP_KEY}\""
     }
