@@ -3,30 +3,21 @@
 buildscript {
     ext.kotlin_version = '1.3.50'
     repositories {
-        // Check that you have the following line (if not, add it):
-        google()  // Google's Maven repository
-        // Add the Bintray repository
+        google()
         jcenter()
     }
     dependencies {
-        // Google Services plugin
         classpath 'com.google.gms:google-services:4.3.3'
-        // To benefit from the latest Performance Monitoring plugin features,
-        // update your Android Gradle Plugin dependency to at least v3.4.0
-        classpath 'com.android.tools.build:gradle:3.6.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.70"
-        // Add the dependency for the Performance Monitoring plugin
-        classpath 'com.google.firebase:perf-plugin:1.3.1'  // Performance Monitoring plugin
-        // Add the Crashlytics Gradle plugin.
+        classpath 'com.android.tools.build:gradle:3.6.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.71"
+        classpath 'com.google.firebase:perf-plugin:1.3.1'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.0.0-beta03'
     }
 }
 
 allprojects {
     repositories {
-        // Check that you have the following line (if not, add it):
-        google()  // Google's Maven repository
-        // Add the Bintray repository
+        google()
         jcenter()
         maven { url 'https://jitpack.io' }
     }
