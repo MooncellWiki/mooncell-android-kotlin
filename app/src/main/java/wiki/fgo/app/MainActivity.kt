@@ -47,7 +47,7 @@ import com.lzf.easyfloat.permission.PermissionUtils
 import com.yhao.floatwindow.FloatWindow
 import com.yhao.floatwindow.Screen
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.float_window.view.*
+import kotlinx.android.synthetic.main.float_window.view.float_webView
 import kotlinx.android.synthetic.main.nav_header.*
 import okhttp3.Call
 import okhttp3.Callback
@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
                 FloatWindow.get().hide()
                 EasyFloat.with(this)
-                    .setLayout(R.layout.float_window, OnInvokeView {
+                    .setLayout(R.layout.float_window, OnInvokeView { it ->
                         it.findViewById<WebView>(R.id.float_webView).setFloatWebView()
                         val url = getCurrentWebView().url
                         it.findViewById<WebView>(R.id.float_webView).loadUrl(url)
@@ -178,6 +178,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         it.findViewById<ImageView>(R.id.ivFloatBallCheck).setOnClickListener {
                             EasyFloat.hideAppFloat()
                             FloatWindow.get().show()
+                        }
+                        val floatWebviewTemp = it.findViewById<WebView>(R.id.float_webView)
+                        it.findViewById<ImageView>(R.id.ivLeftArrow).setOnClickListener {
+                            if (floatWebviewTemp.canGoBack()) {
+                                floatWebviewTemp.goBack()
+                            }
                         }
                         val content = it.findViewById<RelativeLayout>(R.id.rlContent)
                         val params = content.layoutParams as FrameLayout.LayoutParams
