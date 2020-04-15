@@ -238,20 +238,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             true
         }
 
-        R.id.action_about -> {
-            getCurrentWebView().loadUrl("https://fgo.wiki/w/Mooncell:关于")
-            true
-        }
-
         R.id.action_exit -> {
             finish()
-            true
-        }
-
-        R.id.action_about_client -> {
-            val intent = Intent()
-            intent.setClass(this, AboutActivity::class.java)
-            startActivity(intent)
             true
         }
 
@@ -357,6 +345,12 @@ TODO
             )
             R.id.faq -> closeDrawerAfterClick(item, "Mooncell:求助与建议")
             R.id.comment -> closeDrawerAfterClick(item, "Mooncell:评论须知")
+            R.id.action_about -> closeDrawerAfterClick(item, "Mooncell:关于")
+            R.id.action_about_client -> {
+                val intent = Intent()
+                intent.setClass(this, AboutActivity::class.java)
+                startActivity(intent)
+            }
             else -> activityClickListener(item)
         }
         return true
