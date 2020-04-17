@@ -386,6 +386,8 @@ TODO
             Glide.with(this)
                 .load(avatarUrlConcat(it))
                 .transition(withCrossFade())
+                .centerCrop()
+                .override(200, 200)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(false)
                 .into(headIv)
