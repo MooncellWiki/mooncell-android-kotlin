@@ -1,14 +1,21 @@
 package wiki.fgo.app.network
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.util.Log
+import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.io.BufferedOutputStream
+import wiki.fgo.app.MediaStoreHandler.Companion.addImageToGallery
 import java.io.BufferedReader
-import java.io.FileOutputStream
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.net.URLDecoder
+
 
 class HttpUtil {
     companion object {
@@ -20,44 +27,39 @@ class HttpUtil {
             return "http://avatar.mooncell.wiki/mc/$userId/original.png"
         }
 
-        fun requestAvatarFromServer(loggedUserId: String?) {
-            val avatarUrl = loggedUserId?.let { avatarUrlConcat(it) }
-            var conn: HttpURLConnection? = null
-            try {
-                conn = URL(avatarUrl).openConnection() as HttpURLConnection
-                conn.connect()
-                conn.inputStream.use { input ->
-                    BufferedOutputStream(FileOutputStream("./download.png")).use { output ->
-                        input.copyTo(output)
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                conn?.disconnect()
-            }
+        fun saveImageFromServer(imgUrl: String, context: Context) {
+            Thread {
+                val bitmap: Bitmap = Glide.with(context)
+                    .asBitmap()
+                    .load(imgUrl)
+                    .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .get()
+                val saveTo: String = URLDecoder.decode(imgUrl.split("/").last(),"UTF-8")
+                addImageToGallery(bitmap, saveTo, context)
+            }.start()
+            Toast.makeText(context, "图片已保存", Toast.LENGTH_SHORT).show()
         }
 
         fun sendHttpRequest(address: String, callback: HttpCallback?) {
             Thread(Runnable {
                 var connection: HttpURLConnection? = null
                 try {
-                    var url = URL(address)
+                    val url = URL(address)
                     connection = url.openConnection() as HttpURLConnection
                     connection.requestMethod = "GET"
                     connection.connectTimeout = 8000
                     connection.readTimeout = 8000
                     connection.doInput = true
                     connection.doOutput = true
-                    var inStream = connection.inputStream
-                    var reader = BufferedReader(InputStreamReader(inStream))
-                    var responseData = StringBuilder()
-                    var allText = reader.use(BufferedReader::readText)
+                    val inStream = connection.inputStream
+                    val reader = BufferedReader(InputStreamReader(inStream))
+                    val responseData = StringBuilder()
+                    val allText = reader.use(BufferedReader::readText)
                     responseData.append(allText)
                     callback?.onFinish(responseData.toString())
-                }catch (ex: Exception) {
+                } catch (ex: Exception) {
                     callback?.onError(ex)
-                }finally {
+                } finally {
                     connection?.disconnect()
                 }
             }).start()
@@ -66,9 +68,7 @@ class HttpUtil {
 
         fun sendOkHttpRequest(address: String, callback: Callback?) {
             var client = OkHttpClient()
-            var request = Request.Builder().
-            url(address).
-            build()
+            var request = Request.Builder().url(address).build()
 
             client.newCall(request).enqueue(callback)
         }
