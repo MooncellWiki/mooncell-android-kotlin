@@ -2,7 +2,6 @@ package wiki.fgo.app.network
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
