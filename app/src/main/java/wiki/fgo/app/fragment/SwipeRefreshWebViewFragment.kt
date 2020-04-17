@@ -6,9 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.net.Uri.decode
 import android.os.Bundle
-import android.os.Environment
 import android.os.Message
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
