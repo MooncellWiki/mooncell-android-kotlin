@@ -575,7 +575,6 @@ TODO
     }
 
     private fun checkPermissions() {
-        // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(
                 this@MainActivity,
                 Manifest.permission.READ_EXTERNAL_STORAGE
@@ -610,8 +609,6 @@ TODO
                     MY_PERMISSIONS_MIPUSH_GROUP
                 )
             }
-        } else {
-            // Permission has already been granted
         }
     }
 
