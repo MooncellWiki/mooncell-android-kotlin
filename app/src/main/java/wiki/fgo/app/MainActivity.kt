@@ -442,8 +442,6 @@ TODO
     private fun initDrawer() {
         val headView: View = nav_view.inflateHeaderView(R.layout.nav_header)
         headIv = headView.findViewById(R.id.imageView) as ImageView
-        headIv.minimumHeight = 220
-        headIv.minimumWidth = 220
     }
 
     private fun setDrawer() {
