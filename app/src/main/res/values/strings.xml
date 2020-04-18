@@ -46,4 +46,7 @@
     <string name="license_info">开源项目鸣谢</string>
     <string name="about_developer">关于开发者</string>
     <string name="developer_info">开发者信息</string>
+    <string name="float_back_desc">Back</string>
+    <string name="float_ball_desc">floatball mode</string>
+    <string name="sidebar_group3_title">关于</string>
 </resources>

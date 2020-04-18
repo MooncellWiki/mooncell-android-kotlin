@@ -47,7 +47,7 @@ import com.lzf.easyfloat.permission.PermissionUtils
 import com.yhao.floatwindow.FloatWindow
 import com.yhao.floatwindow.Screen
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.float_window.view.*
+import kotlinx.android.synthetic.main.float_window.view.float_webView
 import kotlinx.android.synthetic.main.nav_header.*
 import okhttp3.Call
 import okhttp3.Callback
@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
                 FloatWindow.get().hide()
                 EasyFloat.with(this)
-                    .setLayout(R.layout.float_window, OnInvokeView {
+                    .setLayout(R.layout.float_window, OnInvokeView { it ->
                         it.findViewById<WebView>(R.id.float_webView).setFloatWebView()
                         val url = getCurrentWebView().url
                         it.findViewById<WebView>(R.id.float_webView).loadUrl(url)
@@ -178,6 +178,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         it.findViewById<ImageView>(R.id.ivFloatBallCheck).setOnClickListener {
                             EasyFloat.hideAppFloat()
                             FloatWindow.get().show()
+                        }
+                        val floatWebviewTemp = it.findViewById<WebView>(R.id.float_webView)
+                        it.findViewById<ImageView>(R.id.ivLeftArrow).setOnClickListener {
+                            if (floatWebviewTemp.canGoBack()) {
+                                floatWebviewTemp.goBack()
+                            }
                         }
                         val content = it.findViewById<RelativeLayout>(R.id.rlContent)
                         val params = content.layoutParams as FrameLayout.LayoutParams
@@ -232,20 +238,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             true
         }
 
-        R.id.action_about -> {
-            getCurrentWebView().loadUrl("https://fgo.wiki/w/Mooncell:关于")
-            true
-        }
-
         R.id.action_exit -> {
             finish()
-            true
-        }
-
-        R.id.action_about_client -> {
-            val intent = Intent()
-            intent.setClass(this, AboutActivity::class.java)
-            startActivity(intent)
             true
         }
 
@@ -351,6 +345,12 @@ TODO
             )
             R.id.faq -> closeDrawerAfterClick(item, "Mooncell:求助与建议")
             R.id.comment -> closeDrawerAfterClick(item, "Mooncell:评论须知")
+            R.id.action_about -> closeDrawerAfterClick(item, "Mooncell:关于")
+            R.id.action_about_client -> {
+                val intent = Intent()
+                intent.setClass(this, AboutActivity::class.java)
+                startActivity(intent)
+            }
             else -> activityClickListener(item)
         }
         return true
@@ -386,6 +386,8 @@ TODO
             Glide.with(this)
                 .load(avatarUrlConcat(it))
                 .transition(withCrossFade())
+                .centerCrop()
+                .override(200, 200)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(false)
                 .into(headIv)
@@ -440,8 +442,6 @@ TODO
     private fun initDrawer() {
         val headView: View = nav_view.inflateHeaderView(R.layout.nav_header)
         headIv = headView.findViewById(R.id.imageView) as ImageView
-        headIv.minimumHeight = 220
-        headIv.minimumWidth = 220
     }
 
     private fun setDrawer() {
@@ -575,7 +575,6 @@ TODO
     }
 
     private fun checkPermissions() {
-        // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(
                 this@MainActivity,
                 Manifest.permission.READ_EXTERNAL_STORAGE
@@ -610,8 +609,6 @@ TODO
                     MY_PERMISSIONS_MIPUSH_GROUP
                 )
             }
-        } else {
-            // Permission has already been granted
         }
     }
 

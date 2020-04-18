@@ -17,8 +17,8 @@ android {
         applicationId "wiki.fgo.app"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 8
-        versionName "1.2.4"
+        versionCode 9
+        versionName "1.3.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         def MI_PUSH_APP_ID = project.getProperties().get("MI_PUSH_APP_ID")
         def MI_PUSH_APP_KEY = project.getProperties().get("MI_PUSH_APP_KEY")

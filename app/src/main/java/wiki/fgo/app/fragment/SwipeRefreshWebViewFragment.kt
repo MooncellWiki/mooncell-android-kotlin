@@ -13,12 +13,14 @@ import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import android.webkit.WebView.HitTestResult
 import android.webkit.WebViewClient
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import wiki.fgo.app.R
+import wiki.fgo.app.network.HttpUtil
 import wiki.fgo.app.viewModel.UserViewModel
 import wiki.fgo.app.webview.WebviewInit
 
@@ -117,6 +119,21 @@ class SwipeRefreshWebViewFragment() : Fragment() {
                 return false
             }
         }
+        webView.setOnLongClickListener { v: View? ->
+            val hitTestResult = webView.hitTestResult
+            // 如果是图片类型或者是带有图片链接的类型
+            if (hitTestResult.type == HitTestResult.IMAGE_TYPE ||
+                hitTestResult.type == HitTestResult.SRC_IMAGE_ANCHOR_TYPE
+            ) {
+                val saveImgUrl: String? = hitTestResult.extra
+                if (saveImgUrl != null) {
+                    HttpUtil.saveImageFromServer(saveImgUrl, v!!.context)
+                }
+                return@setOnLongClickListener true
+            }
+            false //保持长按可以复制文字
+        }
+
         webView.loadUrl(mainUrl)
 
         return swipeRefreshLayout

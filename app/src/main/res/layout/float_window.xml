@@ -20,17 +20,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="true"
-        android:theme="@style/MyCheckBox"
         android:text="@string/float_checkbox_state"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:theme="@style/MyCheckBox" />
 
     <ImageView
         android:id="@+id/ivFloatBallCheck"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:padding="10dp"
         android:layout_toRightOf="@id/checkbox"
+        android:contentDescription="@string/float_ball_desc"
+        android:padding="10dp"
         android:src="@drawable/ic_o" />
+
+    <ImageView
+        android:id="@+id/ivLeftArrow"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="-30px"
+        android:layout_toRightOf="@id/ivFloatBallCheck"
+        android:contentDescription="@string/float_back_desc"
+        android:padding="10dp"
+        android:src="@drawable/ic_arrow_back" />
 
     <WebView
         android:id="@+id/float_webView"

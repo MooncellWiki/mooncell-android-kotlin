@@ -89,5 +89,17 @@
                     android:title="@string/comment" />
             </menu>
         </item>
+        <item android:title="@string/sidebar_group3_title">
+            <menu>
+                <item
+                    android:id="@+id/action_about"
+                    android:icon="@drawable/ic_info_black"
+                    android:title="@string/action_about" />
+                <item
+                    android:id="@+id/action_about_client"
+                    android:icon="@drawable/ic_info_black"
+                    android:title="@string/action_about_client" />
+            </menu>
+        </item>
     </group>
 </menu>
