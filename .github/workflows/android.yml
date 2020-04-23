@@ -14,7 +14,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: write google-servie.json
+    - name: write google-services.json
       run:  echo '${{ secrets.GOOGLE_SERVICE }}' >> app/google-services.json
     - name: get mipush sdk
       run: 'mkdir app/libs && wget https://api.github.com/repos${{ secrets.FILE_PATH }}  --header "Authorization: token ${{ secrets.TOKEN }}" --header "Accept: application/vnd.github.v3.raw" -O app/libs/MiPush_SDK_Client_3_7_5.jar'
