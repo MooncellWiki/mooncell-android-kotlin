@@ -68,7 +68,8 @@ class MediaStoreHandler {
 
                 addImageToGalleryLowOS(context.contentResolver, "png", storedImagePath)
 
-//                MediaStore.Images.Media.insertImage(resolver, saveImage, saveName, "")
+                //MediaStore will compress image to low quality before Android 10
+                //MediaStore.Images.Media.insertImage(resolver, saveImage, saveName, "")
             }
         }
 
@@ -93,7 +94,7 @@ class MediaStoreHandler {
             try {
                 val fos = FileOutputStream(file)
                 if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos).also { result = it }) {
-                    Log.w("image manager", "Compression success")
+                    Log.w("media store handler", "Compression success")
                 }
                 fos.close()
             } catch (e: IOException) {
@@ -108,8 +109,8 @@ class MediaStoreHandler {
             filepath: File
         ): Uri? {
             val values = ContentValues()
-            values.put(MediaStore.Images.Media.TITLE, "player")
-            values.put(MediaStore.Images.Media.DISPLAY_NAME, "player")
+            values.put(MediaStore.Images.Media.TITLE, "mooncell")
+            values.put(MediaStore.Images.Media.DISPLAY_NAME, "mooncell")
             values.put(MediaStore.Images.Media.DESCRIPTION, "")
             values.put(MediaStore.Images.Media.MIME_TYPE, "image/$imgType")
             values.put(MediaStore.Images.Media.DATA, filepath.toString())

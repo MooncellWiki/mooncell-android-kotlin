@@ -43,7 +43,7 @@ class SwipeRefreshWebViewFragment() : Fragment() {
             inflater.inflate(R.layout.swipe_refresh_webview, container, false) as SwipeRefreshLayout
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
         webView = swipeRefreshLayout.findViewById(R.id.webView)
-        WebviewInit.setWebView(webView, this.context!!)
+        WebviewInit.setWebView(webView, this.requireContext())
 
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {

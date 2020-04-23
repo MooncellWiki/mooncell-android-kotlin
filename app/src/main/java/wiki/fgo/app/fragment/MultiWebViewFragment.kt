@@ -21,7 +21,7 @@ class MultiWebViewFragment() : Fragment() {
         val layout = inflater.inflate(R.layout.fragment_multi, container, false)
         val tabLayout = layout.findViewById<TabLayout>(R.id.tab_layout)
         pager = layout.findViewById(R.id.vp_content)
-        pager.adapter = TabAdapter(activity!!)
+        pager.adapter = TabAdapter(requireActivity())
         pager.isUserInputEnabled = false
         pager.offscreenPageLimit = 4
         TabLayoutMediator(tabLayout, pager) { tab, position ->
