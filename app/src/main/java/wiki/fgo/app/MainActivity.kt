@@ -16,7 +16,10 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -47,7 +50,7 @@ import com.lzf.easyfloat.permission.PermissionUtils
 import com.yhao.floatwindow.FloatWindow
 import com.yhao.floatwindow.Screen
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.float_window.view.float_webView
+import kotlinx.android.synthetic.main.float_window.view.*
 import kotlinx.android.synthetic.main.nav_header.*
 import okhttp3.Call
 import okhttp3.Callback
@@ -383,14 +386,19 @@ TODO
             }
         })
         user.getUserId().observe(this, Observer {
-            Glide.with(this)
-                .load(avatarUrlConcat(it))
-                .transition(withCrossFade())
-                .centerCrop()
-                .override(200, 200)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(false)
-                .into(headIv)
+            try {
+                Glide.with(this)
+                    .load(avatarUrlConcat(it))
+                    .transition(withCrossFade())
+                    .centerCrop()
+                    .override(200, 200)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(false)
+                    .into(headIv)
+            }
+            catch (ex: Exception) {
+                ex.printStackTrace()
+            }
             with(sharedPref.edit()) {
                 putString("userId", it)
                 apply()
@@ -574,6 +582,14 @@ TODO
         }).start()
     }
 
+    private fun getAppDetailSettingIntent(context: Context): Intent? {
+        val localIntent = Intent()
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        localIntent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+        localIntent.data = Uri.fromParts("package", context.packageName, null)
+        return localIntent
+    }
+
     private fun checkPermissions() {
         if (ContextCompat.checkSelfPermission(
                 this@MainActivity,
@@ -588,16 +604,19 @@ TODO
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this@MainActivity,
                     Manifest.permission.READ_EXTERNAL_STORAGE
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this@MainActivity,
+                    Manifest.permission.READ_PHONE_STATE
                 )
             ) {
-                ActivityCompat.requestPermissions(
-                    this@MainActivity,
-                    arrayOf(
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_PHONE_STATE
-                    ),
-                    MY_PERMISSIONS_MIPUSH_GROUP
-                )
+                AlertDialog.Builder(this)
+                    .setTitle("权限请求")
+                    .setMessage("由于Mooncell客户端已接入MIPUSH，需要读取存储空间和电话权限才能正常运行。\n请前往设置进行授权。")
+                    .setPositiveButton("确定") { _, _ ->
+                        this.startActivity(getAppDetailSettingIntent(this))
+                    }
+                    .setNegativeButton("取消") { _, _ -> }
+                    .show()
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(
