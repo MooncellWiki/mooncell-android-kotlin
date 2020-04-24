@@ -2,10 +2,7 @@ package wiki.fgo.app
 
 import android.Manifest
 import android.app.Activity
-import android.content.ContentResolver
-import android.content.ContentValues
-import android.content.Context
-import android.content.ContextWrapper
+import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
@@ -14,6 +11,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.Nullable
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.io.*
@@ -133,14 +131,18 @@ class MediaStoreHandler {
                         Manifest.permission.READ_EXTERNAL_STORAGE
                     )
                 ) {
-                    ActivityCompat.requestPermissions(
-                        activity,
-                        arrayOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        ),
-                        MY_PERMISSIONS_STORAGE_GROUP
-                    )
+                    AlertDialog.Builder(context)
+                        .setTitle("权限请求")
+                        .setMessage("保存图片操作需要存储空间权限才能正常运行。\n请前往设置进行授权。")
+                        .setPositiveButton("确定") { _, _ ->
+                            val localIntent = Intent()
+                            localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            localIntent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+                            localIntent.data = Uri.fromParts("package", context.packageName, null)
+                            context.startActivity(localIntent)
+                        }
+                        .setNegativeButton("取消") { _, _ -> }
+                        .show()
                 } else {
                     // No explanation needed, we can request the permission.
                     ActivityCompat.requestPermissions(
