@@ -54,9 +54,6 @@ class MediaStoreHandler {
                 }
             } else {
                 //for api version <= 28
-                findActivity(context)?.let {
-                    checkPermissions(context, it)
-                }
 
                 val storedImagePath: File = generateImagePath(saveName)
 
@@ -115,7 +112,7 @@ class MediaStoreHandler {
             return cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         }
 
-        private fun checkPermissions(context: Context, activity: Activity) {
+        fun checkPermissions(context: Context, activity: Activity) {
             if (ContextCompat.checkSelfPermission(
                     context,
                     Manifest.permission.READ_EXTERNAL_STORAGE

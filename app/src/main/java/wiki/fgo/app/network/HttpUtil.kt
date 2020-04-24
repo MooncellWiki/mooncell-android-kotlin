@@ -8,7 +8,9 @@ import com.bumptech.glide.request.target.Target
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import wiki.fgo.app.MediaStoreHandler
 import wiki.fgo.app.MediaStoreHandler.Companion.addImageToGallery
+import wiki.fgo.app.MediaStoreHandler.Companion.findActivity
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -27,13 +29,16 @@ class HttpUtil {
         }
 
         fun saveImageFromServer(imgUrl: String, context: Context) {
+            findActivity(context)?.let {
+                MediaStoreHandler.checkPermissions(context, it)
+            }
             Thread {
                 val bitmap: Bitmap = Glide.with(context)
                     .asBitmap()
                     .load(imgUrl)
                     .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .get()
-                val saveTo: String = URLDecoder.decode(imgUrl.split("/").last(),"UTF-8")
+                val saveTo: String = URLDecoder.decode(imgUrl.split("/").last(), "UTF-8")
                 addImageToGallery(bitmap, saveTo, context)
             }.start()
             Toast.makeText(context, "图片已保存", Toast.LENGTH_SHORT).show()
