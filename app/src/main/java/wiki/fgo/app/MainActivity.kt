@@ -73,8 +73,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val checkUpdateUrl =
         "https://fgo.wiki/images/wiki/merlin/client/update.json"
 
-
-    var isFloatBallCreated: Boolean? = false
+    private var isFloatBallCreated: Boolean? = false
 
     private var searchBaseUrl: String = "https://fgo.wiki/index.php?search="
 
