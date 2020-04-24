@@ -2,6 +2,7 @@ package wiki.fgo.app.network
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import okhttp3.Callback
@@ -28,18 +29,23 @@ class HttpUtil {
         }
 
         fun saveImageFromServer(imgUrl: String, context: Context) {
+            var result: Boolean = false
             findActivity(context)?.let {
-                MediaStoreHandler.checkPermissions(context, it)
+                result = MediaStoreHandler.checkPermissions(context, it)
             }
-            Thread {
-                val bitmap: Bitmap = Glide.with(context)
-                    .asBitmap()
-                    .load(imgUrl)
-                    .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .get()
-                val saveTo: String = URLDecoder.decode(imgUrl.split("/").last(), "UTF-8")
-                addImageToGallery(bitmap, saveTo, context)
-            }.start()
+            if (result) {
+                Thread {
+                    val bitmap: Bitmap = Glide.with(context)
+                        .asBitmap()
+                        .load(imgUrl)
+                        .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .get()
+                    val saveTo: String = URLDecoder.decode(imgUrl.split("/").last(), "UTF-8")
+                    addImageToGallery(bitmap, saveTo, context)
+                }.start()
+            } else {
+                Log.w("media store handler", "permission denied")
+            }
         }
 
         fun sendHttpRequest(address: String, callback: HttpCallback?) {

@@ -112,7 +112,8 @@ class MediaStoreHandler {
             return cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         }
 
-        fun checkPermissions(context: Context, activity: Activity) {
+        fun checkPermissions(context: Context, activity: Activity): Boolean {
+            var isGranted = false
             if (ContextCompat.checkSelfPermission(
                     context,
                     Manifest.permission.READ_EXTERNAL_STORAGE
@@ -152,8 +153,10 @@ class MediaStoreHandler {
                     )
                 }
             } else {
+                isGranted = true
                 Toast.makeText(context, "图片已保存", Toast.LENGTH_SHORT).show()
             }
+            return isGranted
         }
 
         @Nullable
