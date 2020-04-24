@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -54,11 +55,10 @@ class MediaStoreHandler {
                 }
             } else {
                 //for api version <= 28
-
                 val storedImagePath: File = generateImagePath(saveName)
 
                 if (!compressAndSaveImage(storedImagePath, saveImage)) {
-                    Log.e("error","error occurred in save image")
+                    Log.e("error", "error occurred in save image")
                 }
 
                 addImageToGalleryLowOS(context.contentResolver, "png", storedImagePath)
@@ -151,6 +151,8 @@ class MediaStoreHandler {
                         MY_PERMISSIONS_STORAGE_GROUP
                     )
                 }
+            } else {
+                Toast.makeText(context, "图片已保存", Toast.LENGTH_SHORT).show()
             }
         }
 

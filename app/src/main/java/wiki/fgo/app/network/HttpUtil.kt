@@ -2,7 +2,6 @@ package wiki.fgo.app.network
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import okhttp3.Callback
@@ -41,7 +40,6 @@ class HttpUtil {
                 val saveTo: String = URLDecoder.decode(imgUrl.split("/").last(), "UTF-8")
                 addImageToGallery(bitmap, saveTo, context)
             }.start()
-            Toast.makeText(context, "图片已保存", Toast.LENGTH_SHORT).show()
         }
 
         fun sendHttpRequest(address: String, callback: HttpCallback?) {
