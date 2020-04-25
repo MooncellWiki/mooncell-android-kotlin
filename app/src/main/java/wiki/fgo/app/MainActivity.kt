@@ -394,6 +394,7 @@ TODO
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(false)
                     .into(headIv)
+                invalidateOptionsMenu()
             }
             catch (ex: Exception) {
                 ex.printStackTrace()
