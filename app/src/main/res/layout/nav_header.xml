@@ -21,7 +21,6 @@
         app:srcCompat="@mipmap/ic_launcher_round"
         android:clickable="true"
         android:onClick="gotoUserPage"
-        android:scaleType="centerInside"
         android:focusable="true" />
 
     <TextView
