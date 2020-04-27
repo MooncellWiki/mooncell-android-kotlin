@@ -361,10 +361,10 @@ TODO
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.my_toolbar))
         checkPermissions()
         sharedPref = getPreferences(Context.MODE_PRIVATE)
         user = ViewModelProvider(this).get(UserViewModel::class.java)
-        setSupportActionBar(findViewById(R.id.my_toolbar))
         readLogUserPreference()
         initDrawer()
         setDrawer()
@@ -376,9 +376,7 @@ TODO
         sendRequestWithOkHttp(checkUpdateUrl, 2)
         setQueryListener()
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        user = ViewModelProvider(this).get(UserViewModel::class.java)
         user.getUserName().observe(this, Observer {
-            nav_header_title?.text = it
             with(sharedPref.edit()) {
                 putString("userName", it)
                 apply()
