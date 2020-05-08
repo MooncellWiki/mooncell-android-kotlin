@@ -76,7 +76,7 @@ class MediaStoreHandler {
             val file =
                 File(
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                        .toString() + File.separator + "/Mooncell"
+                        .toString() + File.separator + "Mooncell"
                 )
             if (!file.mkdirs() && !file.isDirectory) {
                 Log.e("mkdir", "Directory not created")
