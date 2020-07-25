@@ -1,4 +1,4 @@
-package wiki.fgo.app.viewModel
+package wiki.fgo.app.model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,4 +1,4 @@
-package wiki.fgo.app
+package wiki.fgo.app.ui.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -55,12 +55,15 @@ import kotlinx.android.synthetic.main.nav_header.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
-import wiki.fgo.app.fragment.MultiWebViewFragment
-import wiki.fgo.app.fragment.SwipeRefreshWebViewFragment
-import wiki.fgo.app.network.HttpUtil
-import wiki.fgo.app.network.HttpUtil.Companion.avatarUrlConcat
-import wiki.fgo.app.network.HttpUtil.Companion.urlConcat
-import wiki.fgo.app.viewModel.UserViewModel
+import wiki.fgo.app.BuildConfig
+import wiki.fgo.app.R
+import wiki.fgo.app.ui.view.ScaleImage
+import wiki.fgo.app.ui.fragment.MultiWebViewFragment
+import wiki.fgo.app.ui.fragment.SwipeRefreshWebViewFragment
+import wiki.fgo.app.utils.network.HttpUtil
+import wiki.fgo.app.utils.network.HttpUtil.Companion.avatarUrlConcat
+import wiki.fgo.app.utils.network.HttpUtil.Companion.urlConcat
+import wiki.fgo.app.model.UserViewModel
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -189,7 +192,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         }
                         val content = it.findViewById<RelativeLayout>(R.id.rlContent)
                         val params = content.layoutParams as FrameLayout.LayoutParams
-                        it.findViewById<ScaleImage>(R.id.ivScale).onScaledListener =
+                        it.findViewById<ScaleImage>(
+                            R.id.ivScale
+                        ).onScaledListener =
                             object : ScaleImage.OnScaledListener {
                                 override fun onScaled(x: Float, y: Float, event: MotionEvent) {
                                     params.width += x.toInt()

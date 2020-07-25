@@ -51,7 +51,7 @@
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="parent" />
 
-    <wiki.fgo.app.ScaleImage
+    <wiki.fgo.app.ui.view.ScaleImage
         android:id="@+id/ivScale"
         android:layout_width="36dp"
         android:layout_height="36dp"

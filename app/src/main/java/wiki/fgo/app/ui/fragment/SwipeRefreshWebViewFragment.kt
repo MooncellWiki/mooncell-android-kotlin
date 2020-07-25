@@ -1,4 +1,4 @@
-package wiki.fgo.app.fragment
+package wiki.fgo.app.ui.fragment
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -20,9 +20,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import wiki.fgo.app.R
-import wiki.fgo.app.network.HttpUtil
-import wiki.fgo.app.viewModel.UserViewModel
-import wiki.fgo.app.webview.WebviewInit
+import wiki.fgo.app.utils.network.HttpUtil
+import wiki.fgo.app.model.UserViewModel
+import wiki.fgo.app.ui.webview.WebviewInit
 
 
 class SwipeRefreshWebViewFragment() : Fragment() {

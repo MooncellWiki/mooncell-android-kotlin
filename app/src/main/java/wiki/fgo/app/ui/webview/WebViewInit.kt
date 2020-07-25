@@ -1,4 +1,4 @@
-package wiki.fgo.app.webview
+package wiki.fgo.app.ui.webview
 
 import android.annotation.SuppressLint
 import android.content.Context

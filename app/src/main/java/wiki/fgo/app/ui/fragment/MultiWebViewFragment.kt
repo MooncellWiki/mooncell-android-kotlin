@@ -1,4 +1,4 @@
-package wiki.fgo.app.fragment
+package wiki.fgo.app.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import wiki.fgo.app.R
-import wiki.fgo.app.adapter.TabAdapter
+import wiki.fgo.app.ui.adapter.TabAdapter
 
 class MultiWebViewFragment() : Fragment() {
     private lateinit var pager: ViewPager2

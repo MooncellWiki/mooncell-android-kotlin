@@ -1,10 +1,9 @@
-package wiki.fgo.app
+package wiki.fgo.app.ui.view
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
-import android.widget.ImageView
 
 class ScaleImage(context: Context, attrs: AttributeSet? = null) : androidx.appcompat.widget.AppCompatImageView(context, attrs) {
 

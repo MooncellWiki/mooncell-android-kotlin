@@ -1,8 +1,9 @@
-package wiki.fgo.app
+package wiki.fgo.app.ui.notification
 
 import android.content.Context
 import android.os.Message
 import com.xiaomi.mipush.sdk.*
+import wiki.fgo.app.ui.activity.BaseActivity
 
 class MiPushBroadcast : PushMessageReceiver() {
     //透传消息到达客户端时调用

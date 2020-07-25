@@ -1,4 +1,4 @@
-package wiki.fgo.app
+package wiki.fgo.app.utils.io
 
 import android.Manifest
 import android.app.Activity
@@ -44,7 +44,10 @@ class MediaStoreHandler {
                 if (imagesContentUri != null) {
                     resolver.openFileDescriptor(imagesContentUri, "w", null).use { pfd ->
                         if (pfd != null) {
-                            writeImageData(pfd.fileDescriptor, saveImage)
+                            writeImageData(
+                                pfd.fileDescriptor,
+                                saveImage
+                            )
                         }
                     }
                 }
@@ -55,13 +58,24 @@ class MediaStoreHandler {
                 }
             } else {
                 //for api version <= 28
-                val storedImagePath: File = generateImagePath(saveName)
+                val storedImagePath: File =
+                    generateImagePath(
+                        saveName
+                    )
 
-                if (!compressAndSaveImage(storedImagePath, saveImage)) {
+                if (!compressAndSaveImage(
+                        storedImagePath,
+                        saveImage
+                    )
+                ) {
                     Log.e("error", "error occurred in save image")
                 }
 
-                addImageToGalleryLowOS(context.contentResolver, "png", storedImagePath)
+                addImageToGalleryLowOS(
+                    context.contentResolver,
+                    "png",
+                    storedImagePath
+                )
 
                 //MediaStore will compress image to low quality before Android 10
                 //MediaStore.Images.Media.insertImage(resolver, saveImage, saveName, "")
@@ -165,7 +179,9 @@ class MediaStoreHandler {
                 return context
             }
             return if (context is ContextWrapper) {
-                findActivity(context.baseContext)
+                findActivity(
+                    context.baseContext
+                )
             } else {
                 null
             }

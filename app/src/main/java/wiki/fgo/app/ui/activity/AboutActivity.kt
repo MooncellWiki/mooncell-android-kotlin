@@ -1,4 +1,4 @@
-package wiki.fgo.app
+package wiki.fgo.app.ui.activity
 
 import android.content.Intent
 import android.graphics.Rect
@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_about.*
+import wiki.fgo.app.R
 
 
 class AboutActivity : AppCompatActivity() {

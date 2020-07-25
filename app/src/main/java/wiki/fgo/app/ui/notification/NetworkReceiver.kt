@@ -1,10 +1,11 @@
-package wiki.fgo.app
+package wiki.fgo.app.ui.notification
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Build
+import wiki.fgo.app.ui.activity.BaseActivity
 
 class NetworkReceiver : BroadcastReceiver() {
     private val isConn = false

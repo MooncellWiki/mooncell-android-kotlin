@@ -1,4 +1,4 @@
-package wiki.fgo.app
+package wiki.fgo.app.ui.activity
 
 import android.app.ActivityManager
 import android.app.Application
@@ -10,6 +10,8 @@ import android.os.HandlerThread
 import android.os.Message
 import android.os.Process
 import com.xiaomi.mipush.sdk.MiPushClient
+import wiki.fgo.app.BuildConfig
+import wiki.fgo.app.ui.notification.NetworkReceiver
 
 
 //主要要继承Application
