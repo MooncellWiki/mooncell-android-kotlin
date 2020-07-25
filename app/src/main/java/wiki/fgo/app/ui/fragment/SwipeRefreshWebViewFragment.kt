@@ -19,6 +19,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import kotlinx.android.synthetic.main.swipe_refresh_webview.view.*
 import wiki.fgo.app.R
 import wiki.fgo.app.utils.network.HttpUtil
 import wiki.fgo.app.model.UserViewModel
@@ -42,7 +43,7 @@ class SwipeRefreshWebViewFragment() : Fragment() {
         swipeRefreshLayout =
             inflater.inflate(R.layout.swipe_refresh_webview, container, false) as SwipeRefreshLayout
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
-        webView = swipeRefreshLayout.findViewById(R.id.webView)
+        webView = swipeRefreshLayout.webView
         WebviewInit.setWebView(webView, this.requireContext())
 
         webView.webViewClient = object : WebViewClient() {
@@ -73,7 +74,7 @@ class SwipeRefreshWebViewFragment() : Fragment() {
                         }
                         if (cookieMap["my_wiki_fateUserID"] != null && cookieMap["my_wiki_fateUserName"] != null) {
                             if (user.getUserName().value != decode(cookieMap["my_wiki_fateUserName"])) {
-                                user.userName(decode(cookieMap["my_wiki_fateUserName"]))
+                                user.userName(decode(cookieMap["my_wiki_fateUserName"]).replace("+",""))
                             }
                             if (user.getUserId().value != decode(cookieMap["my_wiki_fateUserID"])) {
                                 user.userId(decode(cookieMap["my_wiki_fateUserID"]))
