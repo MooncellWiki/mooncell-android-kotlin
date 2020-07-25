@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-    private val MY_PERMISSIONS_MIPUSH_GROUP = 1
+    private val PERMISSIONS_MIPUSH_GROUP = 1
 
     lateinit var sharedPref: SharedPreferences
 
@@ -628,7 +628,7 @@ TODO
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.READ_PHONE_STATE
                     ),
-                    MY_PERMISSIONS_MIPUSH_GROUP
+                    PERMISSIONS_MIPUSH_GROUP
                 )
             }
         }
