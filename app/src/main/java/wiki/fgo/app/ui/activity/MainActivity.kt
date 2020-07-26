@@ -57,13 +57,13 @@ import okhttp3.Callback
 import okhttp3.Response
 import wiki.fgo.app.BuildConfig
 import wiki.fgo.app.R
-import wiki.fgo.app.ui.view.ScaleImage
+import wiki.fgo.app.model.UserViewModel
 import wiki.fgo.app.ui.fragment.MultiWebViewFragment
 import wiki.fgo.app.ui.fragment.SwipeRefreshWebViewFragment
+import wiki.fgo.app.ui.view.ScaleImage
 import wiki.fgo.app.utils.network.HttpUtil
 import wiki.fgo.app.utils.network.HttpUtil.Companion.avatarUrlConcat
 import wiki.fgo.app.utils.network.HttpUtil.Companion.urlConcat
-import wiki.fgo.app.model.UserViewModel
 import java.io.IOException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
