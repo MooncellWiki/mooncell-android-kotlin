@@ -19,11 +19,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import kotlinx.android.synthetic.main.swipe_refresh_webview.view.*
 import wiki.fgo.app.R
-import wiki.fgo.app.utils.network.HttpUtil
 import wiki.fgo.app.model.UserViewModel
 import wiki.fgo.app.ui.webview.WebviewInit
+import wiki.fgo.app.utils.network.HttpUtil
 
 
 class SwipeRefreshWebViewFragment() : Fragment() {
@@ -43,7 +42,7 @@ class SwipeRefreshWebViewFragment() : Fragment() {
         swipeRefreshLayout =
             inflater.inflate(R.layout.swipe_refresh_webview, container, false) as SwipeRefreshLayout
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
-        webView = swipeRefreshLayout.webView
+        webView = swipeRefreshLayout.findViewById(R.id.webView)
         WebviewInit.setWebView(webView, this.requireContext())
 
         webView.webViewClient = object : WebViewClient() {
