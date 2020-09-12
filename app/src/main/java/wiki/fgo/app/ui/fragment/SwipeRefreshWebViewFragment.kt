@@ -27,7 +27,7 @@ import wiki.fgo.app.utils.network.HttpUtil
 
 class SwipeRefreshWebViewFragment() : Fragment() {
     private val cssLayer: String =
-        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}.header-container{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
+        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\".minerva-footer{display:none;}form.header{display:none;}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
     private val user: UserViewModel by activityViewModels()
     private val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
     lateinit var webView: WebView
@@ -47,18 +47,15 @@ class SwipeRefreshWebViewFragment() : Fragment() {
 
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                webView.isVisible = false
                 swipeRefreshLayout.setProgressViewEndTarget(false, 250)
                 swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
                 swipeRefreshLayout.isRefreshing = true
-                webView.loadUrl(cssLayer)
                 super.onPageStarted(view, url, favicon)
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 webView.loadUrl(cssLayer)
                 swipeRefreshLayout.isRefreshing = false
-                webView.isVisible = true
                 val cookieManager: CookieManager = CookieManager.getInstance()
                 if (cookieManager.getCookie(url) == null) {
                     println("cookie is null")
