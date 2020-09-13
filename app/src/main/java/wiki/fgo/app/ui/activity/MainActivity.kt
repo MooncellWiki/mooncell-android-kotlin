@@ -350,7 +350,7 @@ TODO
                 item,
                 "Mooncell:如何帮助我们完善网站#除了贡献内容外，您还可以资助我们改善服务器资源"
             )
-            R.id.faq -> closeDrawerAfterClick(item, "Mooncell:求助与建议")
+            R.id.faq -> closeDrawerAfterClick(item, "Mooncell:反馈与建议")
             R.id.comment -> closeDrawerAfterClick(item, "Mooncell:评论须知")
             R.id.action_about -> closeDrawerAfterClick(item, "Mooncell:关于")
             R.id.action_about_client -> {
