@@ -614,7 +614,7 @@ TODO
             ) {
                 AlertDialog.Builder(this)
                     .setTitle("权限请求")
-                    .setMessage("由于Mooncell客户端已接入MIPUSH，需要读取存储空间和电话权限才能正常运行。\n请前往设置进行授权。")
+                    .setMessage("由于Mooncell客户端已接入小米推送SDK，需要读取存储空间和电话权限才能正常运行。\n请前往设置进行授权。")
                     .setPositiveButton("确定") { _, _ ->
                         this.startActivity(getAppDetailSettingIntent(this))
                     }
