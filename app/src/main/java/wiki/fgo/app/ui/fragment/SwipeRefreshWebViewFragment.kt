@@ -27,7 +27,7 @@ import wiki.fgo.app.utils.network.HttpUtil
 
 class SwipeRefreshWebViewFragment() : Fragment() {
     private val cssLayer: String =
-        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\"form.header{display:none;}.footer-content{display:none}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
+        "javascript:var style = document.createElement(\"style\");style.type = \"text/css\";style.innerHTML=\"form.header{display:none}.footer-content{display:none}\";style.id=\"addStyle\";document.getElementsByTagName(\"HEAD\").item(0).appendChild(style);"
     private val user: UserViewModel by activityViewModels()
     private val mainUrl = "https://fgo.wiki/index.php?title=首页&mobileaction=toggle_view_mobile"
     lateinit var webView: WebView
