@@ -120,7 +120,6 @@ class AboutActivity : AppCompatActivity() {
             state: RecyclerView.State
         ) {
             outRect.set(0, 0, 0, 3)
-//            super.getItemOffsets(outRect, view, parent, state)
         }
     }
 
