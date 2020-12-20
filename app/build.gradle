@@ -18,7 +18,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 12
-        versionName "1.4.1"
+        versionName "1.4.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         def MI_PUSH_APP_ID = project.getProperties().get("MI_PUSH_APP_ID")
         def MI_PUSH_APP_KEY = project.getProperties().get("MI_PUSH_APP_KEY")
