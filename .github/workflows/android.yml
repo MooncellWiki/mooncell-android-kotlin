@@ -31,15 +31,6 @@ jobs:
         body: debug version of ${{ github.sha }}
         draft: false
         prerelease: false
-    - name: Sign apks
-      uses: r0adkll/sign-android-release@v1
-      id: sign_apks
-      with:
-        releaseDirectory: app/build/outputs/apk/release
-        signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-        alias: ${{ secrets.ALIAS }}
-        keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-        keyPassword: ${{ secrets.KEY_PASSWORD }}
     - name: Upload Debug Asset
       id: upload-debug-asset 
       uses: actions/upload-release-asset@v1
@@ -48,25 +39,15 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
         asset_path: app/build/outputs/apk/debug/app-debug.apk
-        asset_name: debug-unsigned.apk
+        asset_name: mooncell-client-debug.apk
         asset_content_type: application/vnd.android.package-archive
-    - name: Upload Release Unsigned Asset
-      id: upload-release-asset-unsigned
+    - name: Upload Release Asset
+      id: upload-release-asset 
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: app/build/outputs/apk/release/app-release-unsigned.apk
-        asset_name: release-unsigned.apk
-        asset_content_type: application/vnd.android.package-archive
-    - name: Upload Release Signed Asset
-      id: upload-release-signed-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{steps.sign_apks.outputs.signedReleaseFile}}
-        asset_name: release-signed.apk
+        asset_name: mooncell-client-release-unsigned.apk
         asset_content_type: application/vnd.android.package-archive
