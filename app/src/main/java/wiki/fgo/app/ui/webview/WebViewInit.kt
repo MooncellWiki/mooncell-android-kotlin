@@ -39,6 +39,9 @@ class WebviewInit {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 settings.safeBrowsingEnabled = true
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                settings.setForceDark(WebSettings.FORCE_DARK_AUTO)
+            }
             settings.useWideViewPort = true
             settings.loadWithOverviewMode = true
             settings.javaScriptCanOpenWindowsAutomatically = true
