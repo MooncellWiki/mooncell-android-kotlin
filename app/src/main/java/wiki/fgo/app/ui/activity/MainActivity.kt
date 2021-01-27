@@ -496,7 +496,7 @@ TODO
             val subMenu: SubMenu = menu.addSubMenu(1, 1, 0, "当前活动")
             for (i in stringList) {
                 val subStringList = i.split(",")
-                subMenu.add(subStringList.elementAt(0))
+                subMenu.add(subStringList.elementAt(1))
             }
         }
     }
