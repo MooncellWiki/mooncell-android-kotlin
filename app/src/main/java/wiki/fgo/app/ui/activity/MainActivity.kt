@@ -92,6 +92,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var fc: FragmentsController
 
+    // 当前活动 title查url
+    private var recentActivityTitleUrlMap: MutableMap<String, String> =
+        mutableMapOf<String, String>()
+
     inner class FragmentsController(private var isTab: Boolean) {
         var isFirst = true
         private val fragments = mutableMapOf<Int, Fragment>()
@@ -268,7 +272,6 @@ TODO
         }
 
  */
-
         else -> {
             // If we got here, the user's action was not recognized.
             // Invoke the superclass to handle it.
@@ -328,6 +331,14 @@ TODO
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        if (item.groupId == 1) {
+            //当前活动
+            val url = this.recentActivityTitleUrlMap[item.title];
+            if (url != null) {
+                closeDrawerAfterClick(item, url);
+                return true
+            }
+        }
         when (item.itemId) {
             R.id.main_page -> closeDrawerAfterClick(item)
             R.id.svt_overview -> closeDrawerAfterClick(item)
@@ -398,8 +409,7 @@ TODO
                     .skipMemoryCache(false)
                     .into(headIv)
                 invalidateOptionsMenu()
-            }
-            catch (ex: Exception) {
+            } catch (ex: Exception) {
                 ex.printStackTrace()
             }
             with(sharedPref.edit()) {
@@ -494,9 +504,10 @@ TODO
         runOnUiThread {
             val menu: Menu = nav_view.menu
             val subMenu: SubMenu = menu.addSubMenu(1, 1, 0, "当前活动")
-            for (i in stringList) {
-                val subStringList = i.split(",")
-                subMenu.add(subStringList.elementAt(1))
+            for ((i, v) in stringList.iterator().withIndex()) {
+                val subStringList = v.split(",")
+                subMenu.add(1, i + 1, i + 1, subStringList[1])
+                recentActivityTitleUrlMap[subStringList[1]] = subStringList[0]
             }
         }
     }
