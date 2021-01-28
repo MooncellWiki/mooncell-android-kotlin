@@ -49,7 +49,8 @@
         android:layout_height="match_parent"
         android:layout_below="@id/checkbox"
         app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="parent"
+        android:hardwareAccelerated="false"/>
 
     <wiki.fgo.app.ui.view.ScaleImage
         android:id="@+id/ivScale"
