@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.Message
 import android.util.Log
 import android.view.*
@@ -721,18 +722,30 @@ private fun WebView.setFloatWebView() {
     }
 
     float_webView.webChromeClient = object : WebChromeClient() {
-        override fun onCreateWindow(
-            view: WebView,
-            dialog: Boolean,
-            userGesture: Boolean,
-            resultMsg: Message?
-        ): Boolean {
-            val result: WebView.HitTestResult = view.hitTestResult
-            val data: String? = result.extra
-            val context = view.context
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data))
-            context.startActivity(browserIntent)
-            return false
+            override fun onCreateWindow(
+                view: WebView,
+                dialog: Boolean,
+                userGesture: Boolean,
+                resultMsg: Message?
+            ): Boolean {
+                val result: WebView.HitTestResult = view.hitTestResult
+                val data: String?
+                data = if (result.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+                    val handler = Handler()
+                    val message = handler.obtainMessage()
+
+                    float_webView.requestFocusNodeHref(message)
+                    message.data.getString("url")
+                } else {
+                    result.extra
+                }
+                if (data != null) {
+                    val context = view.context
+                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data))
+                    context.startActivity(browserIntent)
+                }
+                return false
+
+            }
         }
-    }
 }
