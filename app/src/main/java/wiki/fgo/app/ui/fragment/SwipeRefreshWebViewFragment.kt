@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.net.Uri.decode
 import android.os.Bundle
+import android.os.Handler
 import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
@@ -70,7 +71,12 @@ class SwipeRefreshWebViewFragment() : Fragment() {
                         }
                         if (cookieMap["my_wiki_fateUserID"] != null && cookieMap["my_wiki_fateUserName"] != null) {
                             if (user.getUserName().value != decode(cookieMap["my_wiki_fateUserName"])) {
-                                user.userName(decode(cookieMap["my_wiki_fateUserName"]).replace("+",""))
+                                user.userName(
+                                    decode(cookieMap["my_wiki_fateUserName"]).replace(
+                                        "+",
+                                        ""
+                                    )
+                                )
                             }
                             if (user.getUserId().value != decode(cookieMap["my_wiki_fateUserID"])) {
                                 user.userId(decode(cookieMap["my_wiki_fateUserID"]))
@@ -109,11 +115,23 @@ class SwipeRefreshWebViewFragment() : Fragment() {
                 resultMsg: Message?
             ): Boolean {
                 val result: WebView.HitTestResult = view.hitTestResult
-                val data: String? = result.extra
-                val context = view.context
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data))
-                context.startActivity(browserIntent)
+                val data: String?
+                data = if (result.type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+                    val handler = Handler()
+                    val message = handler.obtainMessage()
+
+                    webView.requestFocusNodeHref(message)
+                    message.data.getString("url")
+                } else {
+                    result.extra
+                }
+                if (data != null) {
+                    val context = view.context
+                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data))
+                    context.startActivity(browserIntent)
+                }
                 return false
+
             }
         }
         webView.setOnLongClickListener { v: View? ->
