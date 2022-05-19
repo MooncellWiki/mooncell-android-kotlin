@@ -72,7 +72,7 @@ import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private val sidebarFetchUrl =
-        "https://fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1"
+        "https://m.fgo.wiki/api.php?action=parse&format=json&page=%E6%A8%A1%E6%9D%BF%3AMFSidebarAutoEvents/App&disablelimitreport=1"
 
     private val checkUpdateUrl =
         "https://fgo.wiki/images/wiki/merlin/client/update.json"
